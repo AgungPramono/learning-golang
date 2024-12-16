@@ -18,6 +18,10 @@ func main() {
 	var nama = "Rizky"
 	var e uint8 = nama[0]
 	var estring = string(e)
+	// dalam satu baris
+	var estringLine = string(nama[1])
 
-	fmt.Println(estring)
+	fmt.Println("e :", estring)
+	fmt.Println("estring :", estring)
+	fmt.Println("estringLine : ", estringLine)
 }
