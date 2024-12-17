@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aturan Penamaan File dan Code Convention di Go</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            font-family: Consolas, monospace;
+            font-size: 0.9em;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Aturan Penamaan File dan Code Convention di Go</h1>
+
+    <h2>Aturan Penamaan File</h2>
+    <p>Berikut adalah panduan <strong>aturan penamaan file</strong> di Go:</p>
+
+    <h3>1. Gunakan Huruf Kecil Saja</h3>
+    <pre>
+✅ Benar:
+main.go
+utils.go
+database_handler.go
+
+❌ Salah:
+Main.go
+Utils.go
+DatabaseHandler.go
+    </pre>
+
+    <h3>2. Gunakan Underscore (Snake Case) Jika Perlu</h3>
+    <pre>
+✅ Benar:
+user_service.go
+database_connection.go
+http_handler.go
+
+❌ Salah:
+userService.go
+DatabaseConnection.go
+HttpHandler.go
+    </pre>
+
+    <h3>3. Nama File Mewakili Isi atau Tujuan</h3>
+    <pre>
+Contoh:
+user_service.go        // Layanan terkait user
+database_connection.go // Koneksi database
+utils.go               // Fungsi utilitas
+    </pre>
+
+    <h3>4. Gunakan Suffix untuk File Khusus</h3>
+    <pre>
+Contoh:
+user_service.go        // Layanan terkait user
+user_service_test.go   // Unit test untuk user_service
+config_loader.go       // Untuk memuat konfigurasi
+http_handler.go        // Handler HTTP
+    </pre>
+
+    <h3>5. File Unit Test Selalu Diakhiri <code>_test.go</code></h3>
+    <pre>
+✅ Benar:
+user_service_test.go
+database_handler_test.go
+
+❌ Salah:
+user_service_Test.go
+test_user_service.go
+    </pre>
+
+    <h3>6. Hindari Nama File yang Duplikat dalam Satu Package</h3>
+    <pre>
+Contoh:
+user_service.go
+user_repository.go
+user_handler.go
+    </pre>
+
+    <h3>7. Nama File Harus Singkat tapi Jelas</h3>
+    <pre>
+✅ Benar:
+auth_service.go
+db_connector.go
+config_loader.go
+
+❌ Salah:
+authentication_service_handler.go
+database_connection_connector.go
+load_the_configuration_file.go
+    </pre>
+
+    <h3>8. Hindari Nama File yang Berkonflik dengan Package Bawaan</h3>
+    <pre>
+❌ Salah:
+os.go       // Berkonflik dengan package "os"
+strings.go  // Berkonflik dengan package "strings"
+
+✅ Benar:
+file_operations.go
+string_utils.go
+    </pre>
+
+    <h3>9. Hindari Menggunakan Spasi dan Karakter Khusus</h3>
+    <pre>
+✅ Benar:
+user_service.go
+user_data.go
+
+❌ Salah:
+user service.go
+user-data.go
+user#service.go
+    </pre>
+
+    <h2>Code Convention di Go Sesuai Standar Google</h2>
+    <h3>1. Format Kode dengan <code>gofmt</code></h3>
+    <ul>
+        <li>Gunakan <code>gofmt</code> untuk memastikan format kode yang konsisten.</li>
+        <li>Jangan modifikasi secara manual format kode.</li>
+    </ul>
+
+    <h3>2. Nama Variabel dan Fungsi</h3>
+    <ul>
+        <li>Gunakan <code>camelCase</code> untuk variabel, parameter, dan nama fungsi.</li>
+        <li>Gunakan <code>PascalCase</code> untuk nama fungsi yang diekspos (public).</li>
+    </ul>
+    <pre>
+func calculateTotal() int {   // Private function
+    totalAmount := 0          // Variabel dengan camelCase
+    return totalAmount
+}
+
+func CalculateTax() int {     // Public function
+    return 10
+}
+    </pre>
+
+    <h3>3. Nama Paket</h3>
+    <ul>
+        <li>Gunakan huruf kecil tanpa underscore.</li>
+        <li>Nama paket harus deskriptif tetapi pendek.</li>
+    </ul>
+    <pre>
+✅ Benar:
+package user
+package database
+
+❌ Salah:
+package UserData
+package database_handler
+    </pre>
+
+    <h3>4. Hindari Variabel yang Tidak Digunakan</h3>
+    <ul>
+        <li>Go tidak mengizinkan variabel yang dideklarasikan tetapi tidak digunakan.</li>
+        <li>Gunakan underscore (<code>_</code>) jika perlu mengabaikan nilai.</li>
+    </ul>
+    <pre>
+func Example() {
+    value, _ := getValue() // Abaikan nilai kedua
+}
+    </pre>
+
+    <h3>5. Struktur Kode yang Rapi</h3>
+    <ul>
+        <li>Kelompokkan kode berdasarkan fungsionalitas.</li>
+        <li>Struktur proyek sebaiknya konsisten.</li>
+    </ul>
+
+    <h3>6. Komentar</h3>
+    <ul>
+        <li>Gunakan komentar untuk mendokumentasikan fungsi yang diekspos.</li>
+        <li>Komentar harus dimulai dengan nama fungsi/variabel.</li>
+    </ul>
+    <pre>
+// CalculateTax menghitung pajak berdasarkan jumlah total.
+func CalculateTax(total int) int {
+    return total * 10 / 100
+}
+    </pre>
+
+    <h2>Ringkasan</h2>
+    <p>Dengan mengikuti panduan ini, Anda dapat memastikan kode Go Anda lebih <strong>konsisten</strong>, <strong>terorganisir</strong>, dan sesuai dengan standar industri seperti yang digunakan oleh Google.</p>
+</body>
+</html>
