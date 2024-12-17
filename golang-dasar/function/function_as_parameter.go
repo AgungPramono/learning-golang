@@ -4,7 +4,8 @@ import (
 	"fmt"
 )
 
-// buatkan type function agar jika jumlah parameter banyak
+// buatkan type atau alis function agar jika jumlah parameter banyak
+// keyword type
 // maka tidak perlu menulis banyak parameter
 type Filter func(string) string
 
