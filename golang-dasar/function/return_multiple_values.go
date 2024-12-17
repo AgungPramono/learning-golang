@@ -7,7 +7,7 @@ func main() {
 	fmt.Println(name, age)
 
 	//ignore return value
-	//ganti dengan _ untuk return yang tidak butuh di ambil nilainya
+	//ganti dengan _ untuk return yang tidak butuh di ambil nilai returnnya
 	//_ = getIdentity("agung", 18)
 	name, _ = getIdentity("budiono", 25)
 	fmt.Println(name)

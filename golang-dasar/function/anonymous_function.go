@@ -13,11 +13,14 @@ func registerUserBanned(nameUser string, bandUserFilter BandUserFilter) {
 }
 
 func main() {
+
+	// cara 1 membuat anonymous function
 	bannedUser := func(name string) bool {
 		return name == "goblok"
 	}
 	registerUserBanned("doni", bannedUser)
 
+	//cara 2
 	registerUserBanned("adi", func(name string) bool {
 		return name == "adi"
 	})
