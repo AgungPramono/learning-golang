@@ -16,7 +16,8 @@ func TestHelloWorld(t *testing.T) {
 
 	if result != "hello agung" {
 		//error test
-		t.Fail() // ketika dijalankan tetap akan di lanjutkan ke bawah
+		//t.Fail() // ketika dijalankan tetap akan di lanjutkan ke bawah
+		t.Error("result must be \"hello agung\"")
 	}
 	fmt.Println("TestHelloWorld done")
 }
@@ -26,7 +27,8 @@ func TestHellodAhmad(t *testing.T) {
 
 	if result != "hello ahmad" {
 		//error test
-		t.FailNow() // ketika dijalankan tidak akan di lanjutkan ke bawah
+		//t.FailNow() // ketika dijalankan tidak akan di lanjutkan ke bawah
+		t.Fatalf("result must be \"hello ahmad\"")
 	}
 	fmt.Println("TestHelloAhmad done")
 }
