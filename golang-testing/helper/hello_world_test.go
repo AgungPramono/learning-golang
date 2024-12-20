@@ -13,7 +13,10 @@ import (
 // go test -v : melihat function apa saja yg dijalankan test
 // go test -v -run <NamaFunction> : menjalankan test untuk function tertentu
 // go test -v ./... : menjalanlan test dari root module
+//go test -v -run <NamaFunction>/<NamaSubTest> : menjalankan test untuk subtest tertentu
+//go test -v -run /NamaSubTests : menjalankan semua unit test dengan sub test yg ditentukan
 
+// hanya dijalankan di satu package
 func TestMain(m *testing.M) {
 	//before
 	fmt.Println("BEFORE UNIT TEST")
@@ -64,4 +67,17 @@ func TestSkip(t *testing.T) {
 	}
 	result := HellowWorld("agung")
 	require.Equal(t, "hello agung", result, "result must be \"hello agung\"")
+}
+
+// sub test
+func TestSubTest(t *testing.T) {
+	t.Run("agung", func(t *testing.T) {
+		result := HellowWorld("agung")
+		require.Equal(t, "hello agung", result, "result must be \"hello agung\"")
+	})
+
+	t.Run("ahmad", func(t *testing.T) {
+		result := HellowWorld("ahmad")
+		require.Equal(t, "hello ahmad", result, "result must be \"hello ahmad\"")
+	})
 }
