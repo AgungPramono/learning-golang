@@ -14,6 +14,16 @@ import (
 // go test -v -run <NamaFunction> : menjalankan test untuk function tertentu
 // go test -v ./... : menjalanlan test dari root module
 
+func TestMain(m *testing.M) {
+	//before
+	fmt.Println("BEFORE UNIT TEST")
+
+	m.Run()
+
+	//after
+	fmt.Println("AFTER UNIT TEST")
+}
+
 func TestHelloWorld(t *testing.T) {
 	result := HellowWorld("agung")
 
