@@ -1,6 +1,9 @@
 package helper
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 // function untuk unit test harus di awali dengan "Test"
 // untuk menjalankan test gunakan perintah : go test
@@ -10,16 +13,20 @@ import "testing"
 
 func TestHelloWorld(t *testing.T) {
 	result := HellowWorld("agung")
+
 	if result != "hello agung" {
 		//error test
-		panic("Result is not hello Eko")
+		t.Fail() // ketika dijalankan tetap akan di lanjutkan ke bawah
 	}
+	fmt.Println("TestHelloWorld done")
 }
 
 func TestHellodAhmad(t *testing.T) {
 	result := HellowWorld("ahmad")
+
 	if result != "hello ahmad" {
 		//error test
-		panic("Result is not hello Eko")
+		t.FailNow() // ketika dijalankan tidak akan di lanjutkan ke bawah
 	}
+	fmt.Println("TestHelloAhmad done")
 }
