@@ -16,16 +16,34 @@ import (
 //go test -v -run <NamaFunction>/<NamaSubTest> : menjalankan test untuk subtest tertentu
 //go test -v -run /NamaSubTests : menjalankan semua unit test dengan sub test yg ditentukan
 
-// hanya dijalankan di satu package
-func TestMain(m *testing.M) {
-	//before
-	fmt.Println("BEFORE UNIT TEST")
+//go test -v -bench=. : menjalankan benchmark dan unit test
+//go test -v -run=NotMathBenchMark -bench=. hanya menjalakan benchmark
+//go test -v -run=NotMathBenchMark -bench=BechMarkTest : menjalankan benchmark pada function benchmark tertentu
+//go test -v -bench=./.. : menjalankan benchmark di root module
 
-	m.Run()
-
-	//after
-	fmt.Println("AFTER UNIT TEST")
+// BenchMark
+func BenchmarkHelloWorld(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		HellowWorld("agung")
+	}
 }
+
+func BenchmarkHelloWorldGolang(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		HellowWorld("Golang")
+	}
+}
+
+// hanya dijalankan di satu package
+//func TestMain(m *testing.M) {
+//	//before
+//	fmt.Println("BEFORE UNIT TEST")
+//
+//	m.Run()
+//
+//	//after
+//	fmt.Println("AFTER UNIT TEST")
+//}
 
 func TestHelloWorld(t *testing.T) {
 	result := HellowWorld("agung")
