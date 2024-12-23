@@ -274,9 +274,10 @@ public class Rectangle {
         this.width = width;
         this.height = height;
     }
-}```
-- **Golang**:
+}
+```
 
+- **Golang**:
 ```go
 Copy code
 type Rectangle struct {
@@ -288,6 +289,7 @@ func NewRectangle(width, height float64) Rectangle {
     return Rectangle{Width: width, Height: height}
 }
 ```
+
 Perbandingan:
 
 Java memiliki ***konstruktor*** bawaan dalam class.
