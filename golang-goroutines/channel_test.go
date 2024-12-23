@@ -63,3 +63,24 @@ func TestInOutChannel(t *testing.T) {
 	time.Sleep(5 * time.Second)
 	defer close(channel)
 }
+
+func TestChannelWithBuffer(t *testing.T) {
+	channel := make(chan string, 3) //buat channel dg buffer 3
+	defer close(channel)
+
+	go func() {
+		channel <- "Belajar Java"
+		channel <- "Belajar Golang"
+		channel <- "Belajar Js"
+	}()
+
+	go func() {
+		fmt.Println(<-channel)
+		fmt.Println(<-channel)
+		fmt.Println(<-channel)
+	}()
+	time.Sleep(2 * time.Second)
+
+	fmt.Println("Selesai mengirim data ke channel")
+
+}
