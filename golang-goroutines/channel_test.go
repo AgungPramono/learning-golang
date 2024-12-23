@@ -22,3 +22,20 @@ func TestCreateChannel(t *testing.T) {
 	defer close(channel)
 	time.Sleep(5 * time.Second)
 }
+
+func TestChannelAsParameter(t *testing.T) {
+	channel := make(chan string)
+
+	go GiveMeResponse(channel)
+
+	data := <-channel
+	fmt.Println(data)
+	defer close(channel)
+
+	time.Sleep(5 * time.Second)
+}
+
+func GiveMeResponse(channel chan string) {
+	time.Sleep(2 * time.Second)
+	channel <- "Pemrograman Golang Untuk Pemula"
+}
