@@ -39,3 +39,27 @@ func GiveMeResponse(channel chan string) {
 	time.Sleep(2 * time.Second)
 	channel <- "Pemrograman Golang Untuk Pemula"
 }
+
+// function hanya bisa untuk mengirim data melalui channel
+func OnlyIn(channel chan<- string) {
+	time.Sleep(2 * time.Second)
+	//data := <-channel //tidak bisa
+	channel <- "Pemrograman Golang Untuk Pemula"
+}
+
+// function hanya bisa untuk mengambil data dari channel
+func OnlyOut(channel <-chan string) {
+	data := <-channel
+	//channel <- "Pemrograman java" //tidak bisa
+	fmt.Println(data)
+}
+
+func TestInOutChannel(t *testing.T) {
+	channel := make(chan string)
+
+	go OnlyIn(channel)
+	go OnlyOut(channel)
+
+	time.Sleep(5 * time.Second)
+	defer close(channel)
+}
