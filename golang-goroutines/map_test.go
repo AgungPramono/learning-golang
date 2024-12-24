@@ -28,4 +28,5 @@ func TestMap(t *testing.T) {
 		fmt.Println(key, ":", value)
 		return true
 	})
+	fmt.Println("Complete")
 }
