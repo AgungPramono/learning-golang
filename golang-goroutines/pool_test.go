@@ -8,7 +8,11 @@ import (
 )
 
 func TestPool(t *testing.T) {
-	pool := sync.Pool{}
+	pool := sync.Pool{
+		New: func() interface{} {
+			return "New"
+		},
+	}
 
 	pool.Put("Golang")
 	pool.Put("Java")
