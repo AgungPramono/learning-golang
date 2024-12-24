@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"runtime"
 	"testing"
+	"time"
 )
 
 func TestContext(t *testing.T) {
@@ -44,15 +45,21 @@ func TestContextWithValue(t *testing.T) {
 	//fmt.Println(contextF.Value("b"))
 }
 
-func createCounter() chan int {
+func createCounter(ctx context.Context) chan int {
 	destination := make(chan int)
 
 	go func() {
 		defer close(destination)
 		counter := 1
 		for {
-			destination <- counter
-			counter++
+			select {
+			case <-ctx.Done(): // cek ager tidak terjadi goroutine leak
+				return
+			default:
+				destination <- counter
+				counter++
+			}
+
 		}
 	}()
 
@@ -63,7 +70,13 @@ func TestCounter(t *testing.T) {
 
 	fmt.Println("goroutine number ", runtime.NumGoroutine())
 
-	destination := createCounter()
+	parent := context.Background()
+	ctx, cancel := context.WithCancel(parent) //buat child context dg konfigurasi cancel
+
+	destination := createCounter(ctx)
+
+	fmt.Println("goroutine number ", runtime.NumGoroutine())
+
 	for n := range destination {
 		fmt.Println("counter : ", n)
 		if n == 10 {
@@ -71,5 +84,8 @@ func TestCounter(t *testing.T) {
 		}
 	}
 
+	cancel() // mengirim sinyal cancel ke context
+
+	time.Sleep(2 * time.Second)
 	fmt.Println("goroutine number ", runtime.NumGoroutine())
 }
