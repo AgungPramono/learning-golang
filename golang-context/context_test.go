@@ -53,11 +53,12 @@ func createCounter(ctx context.Context) chan int {
 		counter := 1
 		for {
 			select {
-			case <-ctx.Done(): // cek ager tidak terjadi goroutine leak
+			case <-ctx.Done(): // cek notif jika ada cancel context
 				return
 			default:
 				destination <- counter
 				counter++
+				time.Sleep(1 * time.Second) //simulasi slow/lemot
 			}
 
 		}
@@ -88,4 +89,24 @@ func TestCounter(t *testing.T) {
 
 	time.Sleep(2 * time.Second)
 	fmt.Println("goroutine number ", runtime.NumGoroutine())
+}
+
+func TestCounterWithTimeout(t *testing.T) {
+
+	fmt.Println("total goroutine ", runtime.NumGoroutine())
+
+	parent := context.Background()
+	ctx, cancel := context.WithTimeout(parent, 5*time.Second) //buat child context dg konfigurasi timeout
+	defer cancel()
+
+	destination := createCounter(ctx)
+
+	fmt.Println("total goroutine ", runtime.NumGoroutine())
+
+	for n := range destination {
+		fmt.Println("counter : ", n)
+	}
+
+	time.Sleep(2 * time.Second)
+	fmt.Println("total goroutine ", runtime.NumGoroutine())
 }
