@@ -110,3 +110,23 @@ func TestCounterWithTimeout(t *testing.T) {
 	time.Sleep(2 * time.Second)
 	fmt.Println("total goroutine ", runtime.NumGoroutine())
 }
+
+func TestCounterWithDeadline(t *testing.T) {
+
+	fmt.Println("total goroutine ", runtime.NumGoroutine())
+
+	parent := context.Background()
+	ctx, cancel := context.WithDeadline(parent, time.Now().Add(5*time.Second)) //buat child context dg konfigurasi dealine
+	defer cancel()
+
+	destination := createCounter(ctx)
+
+	fmt.Println("total goroutine ", runtime.NumGoroutine())
+
+	for n := range destination {
+		fmt.Println("counter : ", n)
+	}
+
+	time.Sleep(2 * time.Second)
+	fmt.Println("total goroutine ", runtime.NumGoroutine())
+}
