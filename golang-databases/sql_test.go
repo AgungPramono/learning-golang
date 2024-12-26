@@ -203,3 +203,43 @@ func TestPreparedStatement(t *testing.T) {
 		fmt.Println("id comment : ", id)
 	}
 }
+
+func TestTransaction(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+	tx, err := db.Begin()
+	if err != nil {
+		panic(err)
+	}
+
+	sqlQuery := "insert into comments(email, comment) value (?,?)"
+
+	//transaction
+	for i := 0; i < 5; i++ {
+		email := "agung@" + strconv.Itoa(i) + "mail.com"
+		comments := "ini comment ke :" + strconv.Itoa(i)
+
+		// tidak perlu sql script lagi karena sudah di buatkan PrepareContext
+		//jadi bisa digunakan berulang kali
+		result, err := tx.ExecContext(ctx, sqlQuery, email, comments)
+		if err != nil {
+			panic(err)
+		}
+
+		id, err := result.LastInsertId()
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("id comment : ", id)
+	}
+
+	//err = tx.Commit()
+	err = tx.Rollback()
+	if err != nil {
+		return
+	}
+
+}
