@@ -20,3 +20,11 @@ VALUES ('01','agung','agung@mail.com',10000, 1.0,'1999-9-2', true),
        ('03','budi','budi@mail.com',50000, 5.0,'1987-10-6', true),
        ('04','angga','anggga@mail.com',70000, 4.0,'1988-11-23', true),
        ('05','ahmad',NULL,90000, 2.0,'1989-6-22', true);
+
+CREATE TABLE user (
+    username VARCHAR(100) NOT NULL ,
+    password VARCHAR(100) NOT NULL ,
+    PRIMARY KEY (username)
+)ENGINE =InnoDB
+
+insert into user(username, password) value ('admin','admin');
