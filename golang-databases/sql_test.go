@@ -2,6 +2,7 @@ package golang_databases
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"testing"
 	"time"
@@ -58,7 +59,8 @@ func TestSqlComplex(t *testing.T) {
 	scriptSql := "SELECT id,name,email,balance,rating,birth_date,married,create_at FROM customer"
 	rows, err := db.QueryContext(ctx, scriptSql)
 	for rows.Next() {
-		var id, name, email string
+		var id, name string
+		var email sql.NullString
 		var balance int32
 		var rating float64
 		var birthDate, createdAt time.Time
@@ -71,7 +73,9 @@ func TestSqlComplex(t *testing.T) {
 		fmt.Println("======================================")
 		fmt.Println("id: ", id)
 		fmt.Println("name : ", name)
-		fmt.Println("email : ", email)
+		if email.Valid {
+			fmt.Println("email : ", email.String)
+		}
 		fmt.Println("balance :", balance)
 		fmt.Println("rating:", rating)
 		fmt.Println("birth_date :", birthDate)
