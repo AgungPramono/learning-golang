@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -168,4 +169,37 @@ func TestAutoIncrement(t *testing.T) {
 
 	fmt.Println("success new comment with id: ", insertId)
 
+}
+
+func TestPreparedStatement(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+	sqlQuery := "insert into comments(email, comment) value (?,?)"
+
+	statement, err := db.PrepareContext(ctx, sqlQuery)
+	if err != nil {
+		panic(err)
+	}
+
+	defer statement.Close()
+
+	for i := 0; i < 100; i++ {
+		email := "agung@" + strconv.Itoa(i) + "mail.com"
+		comments := "ini comment ke :" + strconv.Itoa(i)
+
+		// tidak perlu sql script lagi karena sudah di buatkan PrepareContext
+		//jadi bisa digunakan berulang kali
+		result, err := statement.ExecContext(ctx, email, comments)
+		if err != nil {
+			panic(err)
+		}
+		id, err := result.LastInsertId()
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println("id comment : ", id)
+	}
 }
