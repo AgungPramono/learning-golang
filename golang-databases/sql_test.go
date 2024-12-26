@@ -16,6 +16,7 @@ func TestExecSql(t *testing.T) {
 	scriptSql := "INSERT INTO customer (id, name) VALUES ('03','joko')"
 	//query exec: untuk yang tidak mengembalikan result
 	//seperti perintah: insert,update,delete
+
 	_, err := db.ExecContext(ctx, scriptSql)
 	if err != nil {
 		panic(err)
