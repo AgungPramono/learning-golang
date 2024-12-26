@@ -20,3 +20,30 @@ func TestExecSql(t *testing.T) {
 	}
 	fmt.Println("sukses insert new customer")
 }
+
+func TestQuerySql(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+
+	scriptSql := "SELECT id,name FROM customer"
+	//QueryContext: execute sql yang berupa query
+	rows, err := db.QueryContext(ctx, scriptSql)
+	if err != nil {
+		panic(err)
+	}
+
+	defer rows.Close()
+
+	//iterasi data
+	for rows.Next() {
+		var id, name string
+		err = rows.Scan(&id, &name)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("id: ", id)
+		fmt.Println("name: ", name)
+	}
+}
