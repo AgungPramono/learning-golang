@@ -147,3 +147,25 @@ func TestSqlInjectionSafe(t *testing.T) {
 		fmt.Println("Login Gagal")
 	}
 }
+
+func TestAutoIncrement(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+	ctx := context.Background()
+
+	email := "mulyono@mail.com"
+	comments := "kok tanya saya"
+
+	sqlQuery := "insert into comments(email, comment) value (?,?)"
+	result, err := db.ExecContext(ctx, sqlQuery, email, comments)
+	if err != nil {
+		panic(err)
+	}
+	insertId, err := result.LastInsertId() // ambil last id yg autoincrement
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("success new comment with id: ", insertId)
+
+}
