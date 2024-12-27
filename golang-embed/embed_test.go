@@ -3,6 +3,8 @@ package golang_embed
 import (
 	_ "embed"
 	"fmt"
+	"io/fs"
+	"os"
 	"testing"
 )
 
@@ -14,4 +16,16 @@ var version string
 
 func TestEmbedString(t *testing.T) {
 	fmt.Println(version)
+}
+
+// embed file binary(gambar)
+//
+//go:embed logo.png
+var logo []byte
+
+func TestByte(t *testing.T) {
+	err := os.WriteFile("log_new.png", logo, fs.ModePerm)
+	if err != nil {
+		return
+	}
 }
