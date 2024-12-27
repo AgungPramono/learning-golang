@@ -48,3 +48,22 @@ func TestMultipleFiles(t *testing.T) {
 	c, _ := files.ReadFile("files/file-3.txt")
 	fmt.Println(string(c))
 }
+
+//Path Matcher : untuk multiple file dengan pola nama file yang sama
+
+//go:embed files/*.txt
+var path embed.FS
+
+func TestPathMatcher(t *testing.T) {
+	//mengambil semua file yang ada di folder files
+	dir, _ := path.ReadDir("files")
+
+	for _, entry := range dir {
+
+		if !entry.IsDir() {
+			fmt.Println(entry.Name())
+			content, _ := path.ReadFile("files/" + entry.Name())
+			fmt.Println("conten: ", string(content))
+		}
+	}
+}
