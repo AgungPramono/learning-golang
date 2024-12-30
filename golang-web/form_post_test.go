@@ -15,10 +15,10 @@ func FormPost(writer http.ResponseWriter, request *http.Request) {
 		panic(err)
 	}
 
-	first_name := request.PostForm.Get("first_name")
-	last_name := request.PostForm.Get("last_name")
+	firstName := request.PostForm.Get("first_name")
+	lastName := request.PostForm.Get("last_name")
 
-	fmt.Fprintf(writer, "Hello %s %s", first_name, last_name)
+	fmt.Fprintf(writer, "Hello %s %s", firstName, lastName)
 }
 
 func TestPostForm(t *testing.T) {
