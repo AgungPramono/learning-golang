@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}}</title>
+</head>
+<body>
+<h1>{{.Name}}</h1>
+{{with .Address}}
+        <h1>Jalan : {{.Street}}</h1>
+        <h1>Kota : {{.City}}</h1>
+{{else}}
+        <h1>Alamat masih kosong</h1>
+{{end}}
+</body>
+</html>
