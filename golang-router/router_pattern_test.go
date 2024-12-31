@@ -29,3 +29,22 @@ func TestRouterPatternNamedParameter(t *testing.T) {
 		assert.Equal(t, "Product 1 Item 3", string(body))
 	}
 }
+
+func TestRouterPatternCatchAllParameter(t *testing.T) {
+	router.GET("/images/*image", func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+		image := params.ByName("image")
+		text := "Image: " + image
+		fmt.Fprint(writer, text)
+	})
+
+	//buat request
+	request, _ := http.NewRequest(http.MethodGet, BaseUrl+"/image/small/profile.png", nil)
+	recorder := httptest.NewRecorder()
+
+	router.ServeHTTP(recorder, request)
+	response := recorder.Result()
+	if response.StatusCode == http.StatusOK {
+		body, _ := io.ReadAll(response.Body)
+		assert.Equal(t, "Image : /small/profile.png", string(body))
+	}
+}
