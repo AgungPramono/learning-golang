@@ -10,6 +10,23 @@ type LogMiddleware struct {
 	Handler http.Handler
 }
 
+type ErrorHandler struct {
+	Handler http.Handler
+}
+
+func (errorHandler *ErrorHandler) ServeHTTP(write http.ResponseWriter, request *http.Request) {
+
+	defer func() {
+		err := recover()
+		if err != nil {
+			fmt.Println("Terjadi Error", err)
+			write.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(write, "Terjadi Internal Server Error")
+		}
+	}()
+	errorHandler.Handler.ServeHTTP(write, request)
+}
+
 func (middleware *LogMiddleware) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	fmt.Println("Before Execute handler")
 	middleware.Handler.ServeHTTP(writer, request)
@@ -37,8 +54,12 @@ func TestMiddleware(t *testing.T) {
 		Handler: mux,
 	}
 
-	server := http.Server{
+	errorHandler := &ErrorHandler{
 		Handler: logMiddleware,
+	}
+
+	server := http.Server{
+		Handler: errorHandler,
 		Addr:    "localhost:8080",
 	}
 	err := server.ListenAndServe()
