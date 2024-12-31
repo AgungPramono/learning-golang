@@ -2,6 +2,7 @@ package golang_web
 
 import (
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -10,8 +11,9 @@ import (
 
 func TemplateAutoEscape(writer http.ResponseWriter, request *http.Request) {
 	myTemplate.ExecuteTemplate(writer, "post.gohtml", map[string]interface{}{
-		"Title": "Tempalate Auto Escape",
-		"Body":  "<p>Ini adalah body<% String eid = request.getParameter(\"eid\"); %></p>",
+		"Title": "Template Auto Escape",
+		//"Body":  "<p>Ini adalah body<% String eid = request.getParameter(\"eid\"); %></p>",
+		"Body": template.HTML("<p>Ini adalah body</p>"), //disable auto escape
 	})
 }
 
