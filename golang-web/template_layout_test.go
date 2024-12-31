@@ -11,9 +11,11 @@ import (
 
 func TemplateLayout(writer http.ResponseWriter, request *http.Request) {
 	t := template.Must(template.ParseFiles(
-		"./templates/header.gohtml", "./templates/layout.gohtml", "./templates/footer.gohtml",
+		"./templates/header.gohtml",
+		"./templates/layout.gohtml",
+		"./templates/footer.gohtml",
 	))
-	t.ExecuteTemplate(writer, "layout.gohtml", map[string]interface{}{
+	t.ExecuteTemplate(writer, "layout", map[string]interface{}{
 		"Title": "Template Layout",
 		"Name":  "Agung",
 	})
