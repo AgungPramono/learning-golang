@@ -111,3 +111,47 @@ func TestJsonArrayComplexDecode(t *testing.T) {
 	fmt.Println(customer.Hobbies)
 	fmt.Println(customer.Addresses)
 }
+
+func TestOnlyJsonArrayComplexDecode(t *testing.T) {
+	jsonString := `[{
+						   "Street": "jalan kenangan",
+						   "Country": "Indonesia",
+						   "PostalCode": "64451"
+						  },
+						  {
+						   "Street": "jalan kebaikan",
+						   "Country": "Indonesia",
+						   "PostalCode": "68832"
+						  },
+						  {
+						   "Street": "jalan kebenaran",
+						   "Country": "Indonesia",
+						   "PostalCode": "68832"
+						  }
+						 ]`
+	jsonBytes := []byte(jsonString)
+
+	addresses := &[]Address{}
+	err := json.Unmarshal(jsonBytes, addresses)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(addresses)
+}
+
+func TestOnlyJsonArrayComplexTest(t *testing.T) {
+	addresses := []Address{
+		{
+			"jalan kenangan", "Indonesia", "64451",
+		},
+		Address{
+			"jalan kebeneran", "Indonesia", "68832",
+		},
+		Address{
+			"jalan kebeneran", "Indonesia", "68832",
+		},
+	}
+
+	jsonAddreses, _ := json.MarshalIndent(addresses, "", " ")
+	fmt.Println(string(jsonAddreses))
+}
