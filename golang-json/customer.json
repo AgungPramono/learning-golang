@@ -1,0 +1,29 @@
+{
+  "FirstName": "joko",
+  "MiddleName": "pitono",
+  "LastName": "negoro",
+  "Age": 18,
+  "Married": false,
+  "Hobbies": [
+    "Reading",
+    "Gaming",
+    "Coding"
+  ],
+  "Addresses": [
+    {
+      "Street": "jalan kenangan",
+      "Country": "Indonesia",
+      "PostalCode": "64451"
+    },
+    {
+      "Street": "jalan buntu",
+      "Country": "Indonesia",
+      "PostalCode": "68832"
+    },
+    {
+      "Street": "jalan rusak",
+      "Country": "Indonesia",
+      "PostalCode": "68832"
+    }
+  ]
+}
