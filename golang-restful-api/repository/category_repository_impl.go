@@ -9,8 +9,10 @@ import (
 )
 
 type CategoryRepositoryImpl struct {
-	DB  *sql.DB
-	TRX sql.Tx
+}
+
+func NewCategoryRepository() CategoryRepository {
+	return &CategoryRepositoryImpl{}
 }
 
 func (repository *CategoryRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, category domain.Category) (domain.Category, error) {
@@ -39,7 +41,7 @@ func (repository *CategoryRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx
 	helper.PanicIfErr(err)
 }
 
-func (repository *CategoryRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, categoryId int32) (domain.Category, error) {
+func (repository *CategoryRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, categoryId int) (domain.Category, error) {
 	SQL := "SELECT id,name FROM category WHERE id = ? limit 1"
 	rows, err := tx.QueryContext(ctx, SQL, categoryId)
 	helper.PanicIfErr(err)
