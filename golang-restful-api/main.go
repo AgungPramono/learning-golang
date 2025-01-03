@@ -5,8 +5,10 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"golang-restful-api/app"
 	"golang-restful-api/controller"
+	"golang-restful-api/helper"
 	"golang-restful-api/repository"
 	"golang-restful-api/service"
+	"net/http"
 )
 
 func main() {
@@ -25,4 +27,11 @@ func main() {
 	router.POST("/api/categories", categoryController.Create)
 	router.PUT("/api/categories/:categoryId", categoryController.Update)
 	router.DELETE("/api/categories/:categoryId", categoryController.Delete)
+
+	server := http.Server{
+		Addr:    "localhost:3000",
+		Handler: router,
+	}
+	err := server.ListenAndServe()
+	helper.PanicIfErr(err)
 }
