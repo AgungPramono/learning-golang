@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/go-playground/validator/v10"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
 	"golang-restful-api/app"
 	"golang-restful-api/controller"
