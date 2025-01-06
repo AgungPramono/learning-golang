@@ -8,6 +8,8 @@ package simple
 
 import (
 	"github.com/google/wire"
+	"io"
+	"os"
 )
 
 // Injectors from injector.go:
@@ -66,6 +68,15 @@ func IntializeFooBarUsingValue() *FooBar {
 var (
 	_wireFooValue = fooValue
 	_wireBarValue = barValue
+)
+
+func InitializedReader() io.Reader {
+	reader := _wireFileValue
+	return reader
+}
+
+var (
+	_wireFileValue = os.Stdin
 )
 
 // injector.go:
