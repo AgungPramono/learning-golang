@@ -48,3 +48,9 @@ func InitializeHelloService() *HelloService {
 	wire.Build(helloSet, NewHelloService)
 	return nil
 }
+
+func InitializeFooBar() *FooBar {
+	//wire.Build(NewFoo, NewBar, wire.Struct(new(FooBar), "Foo", "Bar"))
+	wire.Build(NewFoo, NewBar, wire.Struct(new(FooBar), "*"))
+	return nil
+}
