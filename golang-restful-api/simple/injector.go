@@ -33,3 +33,18 @@ func InitializeFooBarService() *FooBarService {
 	wire.Build(FooSet, BarSet, NewFooBarService)
 	return nil
 }
+
+//func InitializeHelloService() *HelloService {
+//	wire.Build(NewHelloService, NewSayHelloImpl)
+//	return nil
+//}
+
+var helloSet = wire.NewSet(
+	NewSayHelloImpl,
+	wire.Bind(new(SayHello), new(*SayHelloImpl)),
+)
+
+func InitializeHelloService() *HelloService {
+	wire.Build(helloSet, NewHelloService)
+	return nil
+}
