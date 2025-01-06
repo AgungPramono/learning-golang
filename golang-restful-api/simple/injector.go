@@ -1,6 +1,8 @@
 //go:build wireinject
 // +build wireinject
 
+//command generate dependecy injection: wire gen [namapackage]
+
 package simple
 
 import (
