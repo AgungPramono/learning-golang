@@ -24,10 +24,22 @@ var categorySet = wire.NewSet(
 	wire.Bind(new(controller.CategoryController), new(*controller.CategoryControllerImpl)),
 )
 
+var validatorSet = wire.NewSet(
+	func() []validator.Option {
+		return nil
+		//return []validator.Option{
+		//	//validator.WithTagName("json"),
+		//
+		//}
+	},
+	validator.New,
+)
+
 func InitializedServer() *http.Server {
 	wire.Build(
+		//validator.New,
 		app.NewDB,
-		validator.New,
+		validatorSet,
 		categorySet,
 		app.NewRouter,
 		wire.Bind(new(http.Handler), new(*httprouter.Router)),
