@@ -1,0 +1,5 @@
+time="2025-01-07T14:25:43+07:00" level=info msg="Test Log Ke file"
+time="2025-01-07T14:25:43+07:00" level=warning msg=Error
+time="2025-01-07T14:26:18+07:00" level=info msg="Test Log Ke file"
+time="2025-01-07T14:26:18+07:00" level=warning msg=warning
+time="2025-01-07T14:26:18+07:00" level=error msg=Error
