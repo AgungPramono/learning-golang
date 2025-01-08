@@ -51,7 +51,9 @@ func (service *CategoryServiceImpl) Update(ctx context.Context, request web.Cate
 	defer helper.CommitOrRollback(tx)
 
 	category, err := service.categoryRepository.FindById(ctx, tx, request.Id)
-	exception.PanicIfNotFoundError(err)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error()))
+	}
 	category.Name = request.Name
 
 	category, _ = service.categoryRepository.Update(ctx, tx, category)
