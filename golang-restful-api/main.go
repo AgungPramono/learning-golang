@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "github.com/go-sql-driver/mysql"
+	"golang-restful-api/helper"
 	"golang-restful-api/middleware"
 	"net/http"
 )
@@ -14,8 +15,7 @@ func NewServer(authMiddleware *middleware.AuthMiddleware) *http.Server {
 }
 
 func main() {
-
-	//server := InitializedServer()
-	//err := server.ListenAndServe()
-	//helper.PanicIfErr(err)
+	server := InitializedServer()
+	err := server.ListenAndServe()
+	helper.PanicIfErr(err)
 }

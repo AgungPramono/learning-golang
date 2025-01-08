@@ -15,6 +15,14 @@ import (
 	"net/http"
 )
 
+func NewValidatorOptions() []validator.Option {
+	return nil
+}
+
+func NewValidator(options []validator.Option) *validator.Validate {
+	return validator.New(options...)
+}
+
 var categorySet = wire.NewSet(
 	repository.NewCategoryRepository,
 	wire.Bind(new(repository.CategoryRepository), new(*repository.CategoryRepositoryImpl)),
@@ -27,7 +35,8 @@ var categorySet = wire.NewSet(
 func InitializedServer() *http.Server {
 	wire.Build(
 		app.NewDB,
-		validator.New,
+		NewValidatorOptions,
+		NewValidator,
 		categorySet,
 		app.NewRouter,
 		wire.Bind(new(http.Handler), new(*httprouter.Router)),

@@ -10,25 +10,25 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name":"Handphone"
+  "name":"Software"
 }
 
 ### GET category by Id
-GET http://localhost:3000/api/categories/8
+GET http://localhost:3000/api/categories/16
 X-API-KEY: SECRET
 Accept: application/json
 
 ### Update Category By Id
-PUT http://localhost:3000/api/categories/8
+PUT http://localhost:3000/api/categories/16
 X-API-KEY: SECRET
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Cellular"
+  "name": "Software dan OS"
 }
 
 ### Delete category by Id
-DELETE http://localhost:3000/api/categories/1
+DELETE http://localhost:3000/api/categories/16
 X-API-KEY: SECRET
 Accept: application/json
