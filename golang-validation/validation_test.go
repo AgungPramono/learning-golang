@@ -21,3 +21,15 @@ func TestValidationVariabel(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestValidationTwoVariabel(t *testing.T) {
+	validate := validator.New()
+
+	password := "rahasia"
+	confirmPassword := "rahasia"
+
+	err := validate.VarWithValue(password, confirmPassword, "eqfield")
+	if err != nil {
+		t.Error(err.Error())
+	}
+}
