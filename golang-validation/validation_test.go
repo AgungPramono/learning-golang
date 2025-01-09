@@ -428,3 +428,22 @@ func TestValidPin(t *testing.T) {
 		fmt.Println(err.Error())
 	}
 }
+
+func TestOrRule(t *testing.T) {
+	validate := validator.New()
+
+	type Login struct {
+		Username string `validate:"required,email|numeric"`
+		Password string `validate:"required,min=8"`
+	}
+
+	login := Login{
+		Username: "agung@mail.com",
+		Password: "12345678",
+	}
+
+	err := validate.Struct(login)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
