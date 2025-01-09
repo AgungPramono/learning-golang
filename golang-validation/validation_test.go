@@ -114,3 +114,31 @@ func TestCrossFieldValidation(t *testing.T) {
 		fmt.Println(err.Error())
 	}
 }
+
+func TestNestedStructValidation(t *testing.T) {
+	type Address struct {
+		City    string `validate:"required"`
+		Country string `validate:"required"`
+	}
+
+	type User struct {
+		Name    string  `validate:"required"`
+		Age     int     `validate:"required"`
+		Address Address `validate:"required"`
+	}
+
+	validate := validator.New()
+	user := User{
+		Name: "agung",
+		Age:  20,
+		Address: Address{
+			City:    "Kediri",
+			Country: "Indonesia",
+		},
+	}
+
+	err := validate.Struct(user)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
