@@ -3,6 +3,7 @@ package golang_validation
 import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"strings"
 	"testing"
 )
 
@@ -350,6 +351,39 @@ func TestAliasTag(t *testing.T) {
 		Name:  "agung",
 		Owner: "agung",
 		Note:  "",
+	}
+
+	err := validate.Struct(customer)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
+
+func MustValidUsername(field validator.FieldLevel) bool {
+	value, ok := field.Field().Interface().(string)
+	if ok {
+		if value != strings.ToUpper(value) {
+			return false
+		}
+		if len(value) < 5 {
+			return false
+		}
+	}
+	return true
+}
+
+func TestMustValidUsername(t *testing.T) {
+	validate := validator.New()
+	validate.RegisterValidation("username", MustValidUsername)
+
+	type Customer struct {
+		Username string `validate:"required,username"`
+		Password string `validate:"required"`
+	}
+
+	customer := Customer{
+		Username: "AGUNG",
+		Password: "123456",
 	}
 
 	err := validate.Struct(customer)
