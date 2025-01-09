@@ -333,3 +333,27 @@ func TestBasicMapValidation(t *testing.T) {
 		fmt.Println(err.Error())
 	}
 }
+
+func TestAliasTag(t *testing.T) {
+	validate := validator.New()
+	validate.RegisterAlias("varchar", "required,max=255")
+
+	type Customer struct {
+		Id    string `validate:"varchar,min=5"`
+		Name  string `validate:"varchar"`
+		Owner string `validate:"varchar"`
+		Note  string `validate:"varchar"`
+	}
+
+	customer := Customer{
+		Id:    "123",
+		Name:  "agung",
+		Owner: "agung",
+		Note:  "",
+	}
+
+	err := validate.Struct(customer)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
