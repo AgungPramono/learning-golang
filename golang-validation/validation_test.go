@@ -3,6 +3,8 @@ package golang_validation
 import (
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -383,10 +385,45 @@ func TestMustValidUsername(t *testing.T) {
 
 	customer := Customer{
 		Username: "AGUNG",
-		Password: "123456",
+		Password: "1452556",
 	}
 
 	err := validate.Struct(customer)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
+
+var regexNumber = regexp.MustCompile("^[0-9]+$")
+
+func MustValidPin(field validator.FieldLevel) bool {
+	length, err := strconv.Atoi(field.Param())
+	if err != nil {
+		panic(err.Error())
+	}
+
+	value := field.Field().String()
+	if !regexNumber.MatchString(value) {
+		return false
+	}
+	return len(value) == length
+}
+
+func TestValidPin(t *testing.T) {
+	validate := validator.New()
+	validate.RegisterValidation("pin", MustValidPin)
+
+	type Login struct {
+		Phone string `validate:"required,number"`
+		Pin   string `validate:"required,pin=6"`
+	}
+
+	login := Login{
+		Phone: "123456",
+		Pin:   "123456",
+	}
+
+	err := validate.Struct(login)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
