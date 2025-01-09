@@ -1,6 +1,7 @@
 package golang_validation
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"testing"
 )
@@ -52,5 +53,23 @@ func TestMultiTagParameterValidation(t *testing.T) {
 	err := validate.Var(username, "required,alpha,min=3,max=100")
 	if err != nil {
 		t.Error(err.Error())
+	}
+}
+
+func TestStructValidation(t *testing.T) {
+	type LoginRequest struct {
+		Username string `validate:"required,email"`
+		Password string `validate:"required,min=5"`
+	}
+
+	validate := validator.New()
+	loginRequest := LoginRequest{
+		Username: "agung@mail.com",
+		Password: "agung123",
+	}
+
+	err := validate.Struct(loginRequest)
+	if err != nil {
+		fmt.Println(err.Error())
 	}
 }
