@@ -142,3 +142,37 @@ func TestNestedStructValidation(t *testing.T) {
 		fmt.Println(err.Error())
 	}
 }
+
+func TestCollectionStructValidation(t *testing.T) {
+	type Address struct {
+		City    string `validate:"required"`
+		Country string `validate:"required"`
+	}
+
+	type User struct {
+		Name      string    `validate:"required"`
+		Age       int       `validate:"required"`
+		Addresses []Address `validate:"required,dive"`
+	}
+
+	validate := validator.New()
+	user := User{
+		Name: "",
+		Age:  20,
+		Addresses: []Address{
+			{
+				City:    "",
+				Country: "",
+			},
+			{
+				City:    "",
+				Country: "",
+			},
+		},
+	}
+
+	err := validate.Struct(user)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
