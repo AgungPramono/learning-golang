@@ -21,4 +21,10 @@ func TestJson(t *testing.T) {
 	err := config.ReadInConfig()
 	assert.Nil(t, err)
 
+	assert.Equal(t, "belajar-golang-viper", config.GetString("app.name"))
+	assert.Equal(t, "agung", config.GetString("app.author"))
+	assert.Equal(t, "localhost", config.GetString("database.host"))
+	assert.Equal(t, true, config.GetBool("database.show_sql"))
+	assert.Equal(t, 3306, config.GetInt("database.port"))
+
 }
