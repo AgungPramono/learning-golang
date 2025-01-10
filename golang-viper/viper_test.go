@@ -44,7 +44,7 @@ func TestYaml(t *testing.T) {
 	assert.Equal(t, 3306, config.GetInt("database.port"))
 }
 
-func TestEnv(t *testing.T) {
+func TestConfEnv(t *testing.T) {
 	config := viper2.New()
 	config.SetConfigFile("config.env")
 	config.AddConfigPath(".")
@@ -57,4 +57,22 @@ func TestEnv(t *testing.T) {
 	assert.Equal(t, "localhost", config.GetString("DATABASE_HOST"))
 	assert.Equal(t, true, config.GetBool("DATABASE_SHOW_SQL"))
 	assert.Equal(t, 3306, config.GetInt("DATABASE_PORT"))
+}
+
+func TestEnv(t *testing.T) {
+	config := viper2.New()
+	config.SetConfigFile("config.env")
+	config.AddConfigPath(".")
+	config.AutomaticEnv()
+
+	err := config.ReadInConfig()
+	assert.Nil(t, err)
+
+	assert.Equal(t, "belajar-golang-viper", config.GetString("APP_NAME"))
+	assert.Equal(t, "agung", config.GetString("APP_AUTHOR"))
+	assert.Equal(t, "localhost", config.GetString("DATABASE_HOST"))
+	assert.Equal(t, true, config.GetBool("DATABASE_SHOW_SQL"))
+	assert.Equal(t, 3306, config.GetInt("DATABASE_PORT"))
+
+	assert.Equal(t, "AGUNG", config.GetString("COMPUTERNAME"))
 }
