@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"io"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 )
@@ -49,4 +50,25 @@ func TestContextQueryParam(t *testing.T) {
 	body, err = io.ReadAll(reponse.Body)
 	assert.Nil(t, err)
 	assert.Equal(t, "Hello guest", string(body))
+}
+
+func TestHttpRequest(t *testing.T) {
+	app := fiber.New()
+	app.Get("/request", func(c *fiber.Ctx) error {
+		firstName := c.Get("firstname")
+		lastName := c.Cookies("lastname")
+		return c.SendString("Hello " + firstName + " " + lastName)
+	})
+
+	request := httptest.NewRequest("GET", "/request", nil)
+	request.Header.Set("firstname", "edi")
+	request.AddCookie(&http.Cookie{Name: "lastname", Value: "supono"})
+
+	response, err := app.Test(request)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, response.StatusCode)
+
+	body, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+	assert.Equal(t, "Hello edi supono", string(body))
 }
