@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	_ "embed"
+	"encoding/json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -152,4 +153,35 @@ func TestMultipartFile(t *testing.T) {
 	bytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err)
 	assert.Equal(t, "Uploaded file Success", string(bytes))
+}
+
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func TestRequestBody(t *testing.T) {
+	app := fiber.New()
+	app.Post("/login", func(c *fiber.Ctx) error {
+		body := c.Body()
+
+		request := new(LoginRequest)
+		err := json.Unmarshal(body, &request)
+		if err != nil {
+			return err
+		}
+		return c.SendString("Hello " + request.Username)
+	})
+
+	body := strings.NewReader(`{"username":"agung","password":"123456"}`)
+	request := httptest.NewRequest(http.MethodPost, "/login", body)
+	request.Header.Set("Content-Type", "application/json")
+
+	response, err := app.Test(request)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, response.StatusCode)
+
+	bytes, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+	assert.Equal(t, "Hello agung", string(bytes))
 }
