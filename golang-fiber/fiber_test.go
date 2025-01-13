@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
+	_ "embed"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -112,4 +115,41 @@ func TestFormRequest(t *testing.T) {
 	bytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err)
 	assert.Equal(t, "hello agung", string(bytes))
+}
+
+//go:embed source/contoh.txt
+var contohFile []byte
+
+func TestMultipartFile(t *testing.T) {
+	app := fiber.New()
+	app.Post("/upload", func(c *fiber.Ctx) error {
+		file, err := c.FormFile("file")
+		if err != nil {
+			return err
+		}
+
+		err = c.SaveFile(file, "./target/"+file.Filename)
+		if err != nil {
+			return err
+		}
+		return c.SendString("Uploaded file Success")
+	})
+
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+	file, err := writer.CreateFormFile("file", "contoh.txt")
+	assert.Nil(t, err)
+	file.Write(contohFile)
+	writer.Close()
+
+	request := httptest.NewRequest(http.MethodPost, "/upload", body)
+	request.Header.Set("Content-Type", writer.FormDataContentType())
+	//
+	response, err := app.Test(request)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, response.StatusCode)
+	//
+	bytes, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+	assert.Equal(t, "Uploaded file Success", string(bytes))
 }
