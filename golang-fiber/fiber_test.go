@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/mustache/v2"
 	"github.com/stretchr/testify/assert"
 	"io"
 	"mime/multipart"
@@ -193,7 +194,10 @@ type RegisterRequest struct {
 	Name     string `json:"name" xml:"name" form:"name"`
 }
 
+var engine = mustache.New("./template", ".mustache")
+
 var app = fiber.New(fiber.Config{
+	Views: engine,
 	ErrorHandler: func(c *fiber.Ctx, err error) error {
 		c.Status(fiber.StatusInternalServerError)
 		return c.SendString("Error: " + err.Error())
@@ -356,4 +360,26 @@ func TestErrorHandler(t *testing.T) {
 	bytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err)
 	assert.Equal(t, `Error: Terjadi Error`, string(bytes))
+}
+
+func TestTemplate(t *testing.T) {
+
+	app.Get("/view", func(c *fiber.Ctx) error {
+		return c.Render("index", fiber.Map{
+			"title":   "Hello title",
+			"header":  "hello header",
+			"content": "hello content",
+		})
+	})
+
+	request := httptest.NewRequest(http.MethodGet, "/view", nil)
+	response, err := app.Test(request)
+	assert.Nil(t, err)
+	assert.Equal(t, 200, response.StatusCode)
+
+	bytes, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+	assert.Contains(t, string(bytes), "Hello title")
+	assert.Contains(t, string(bytes), "hello header")
+	assert.Contains(t, string(bytes), "hello content")
 }
