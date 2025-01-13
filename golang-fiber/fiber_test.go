@@ -4,6 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -192,7 +193,12 @@ type RegisterRequest struct {
 	Name     string `json:"name" xml:"name" form:"name"`
 }
 
-var app = fiber.New()
+var app = fiber.New(fiber.Config{
+	ErrorHandler: func(c *fiber.Ctx, err error) error {
+		c.Status(fiber.StatusInternalServerError)
+		return c.SendString("Error: " + err.Error())
+	},
+})
 
 func TestBodyParser(t *testing.T) {
 	app.Post("/register", func(c *fiber.Ctx) error {
@@ -334,4 +340,20 @@ func TestStaticFile(t *testing.T) {
 	bytes, err := io.ReadAll(response.Body)
 	assert.Nil(t, err)
 	assert.Equal(t, `sample file for upload`, string(bytes))
+}
+
+func TestErrorHandler(t *testing.T) {
+
+	app.Get("/error", func(c *fiber.Ctx) error {
+		return errors.New("Terjadi Error")
+	})
+
+	request := httptest.NewRequest(http.MethodGet, "/error", nil)
+	response, err := app.Test(request)
+	assert.Nil(t, err)
+	assert.Equal(t, 500, response.StatusCode)
+
+	bytes, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+	assert.Equal(t, `Error: Terjadi Error`, string(bytes))
 }
