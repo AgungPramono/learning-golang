@@ -318,3 +318,15 @@ func TestStructCondition(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(users))
 }
+
+func TestMapCondition(t *testing.T) {
+	mapCondition := map[string]interface{}{
+		"middle_name": "",
+		"last_name":   "",
+	}
+
+	var users []User
+	err := OpenConnection().Where(mapCondition).Find(&users).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 13, len(users))
+}
