@@ -24,3 +24,5 @@ alter table users add column middle_name varchar(100) null after first_name;
 alter table users add column last_name varchar(100) null after middle_name;
 
 delete from users where id='1';
+
+SELECT * FROM `users` WHERE first_name like '%User%' AND password='1234'

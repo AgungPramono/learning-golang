@@ -260,3 +260,14 @@ func TestQueryAllObject(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 4, len(users))
 }
+
+func TestQueryCondition(t *testing.T) {
+	var users []User
+	err := OpenConnection().
+		Where("first_name like ?", "%User%").
+		Where("password=?", "1234").
+		Find(&users).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 5, len(users))
+
+}
