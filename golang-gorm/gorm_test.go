@@ -40,3 +40,24 @@ func TestRawSQl(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 4, len(samples))
 }
+
+func TestSqlRows(t *testing.T) {
+	rows, err := OpenConnection().Raw("select id,name from sample").Rows()
+	assert.Nil(t, err)
+	defer rows.Close()
+	var samples []Sample
+
+	for rows.Next() {
+		var id string
+		var name string
+
+		err = rows.Scan(&id, &name)
+		assert.Nil(t, err)
+
+		samples = append(samples, Sample{
+			Id:   id,
+			Name: name,
+		})
+	}
+	assert.Equal(t, 4, len(samples))
+}
