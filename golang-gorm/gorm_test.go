@@ -280,3 +280,13 @@ func TestQueryOrOperator(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 14, len(users))
 }
+
+func TestQueryNotOperator(t *testing.T) {
+	var users []User
+	err := OpenConnection().
+		Not("first_name like ?", "%User%").
+		Where("password=?", "12345").
+		Find(&users).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(users))
+}
