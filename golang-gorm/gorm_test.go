@@ -269,5 +269,14 @@ func TestQueryCondition(t *testing.T) {
 		Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 5, len(users))
+}
 
+func TestQueryOrOperator(t *testing.T) {
+	var users []User
+	err := OpenConnection().
+		Where("first_name like ?", "%User%").
+		Or("password=?", "12345").
+		Find(&users).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 14, len(users))
 }
