@@ -74,3 +74,19 @@ func TestScanRows(t *testing.T) {
 	}
 	assert.Equal(t, 4, len(samples))
 }
+
+func TestCreateUser(t *testing.T) {
+	user := &User{
+		Id:       "1",
+		Password: "12345",
+		Name: Name{
+			FirstName:  "Budi",
+			MiddleName: "Siregar",
+			LastName:   "Kapal Laut",
+		},
+		Information: "ini akan di ignore",
+	}
+	response := OpenConnection().Create(&user)
+	assert.Nil(t, response.Error)
+	assert.Equal(t, int64(1), response.RowsAffected)
+}

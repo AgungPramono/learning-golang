@@ -8,7 +8,7 @@ type User struct {
 	Name        Name      `gorm:"embedded"`
 	CreatedAt   time.Time `gorm:"column:created_at;autoCreateTime;<-:create"`
 	UpdatedAt   time.Time `gorm:"column:updated_at;autoCreateTime;autoUpdateTime"`
-	Information string    `gorm:"column:-"`
+	Information string    `gorm:"-"`
 }
 
 // override nama table user
