@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	_ "github.com/gofiber/fiber/v2"
 	"golang-fiber/helper"
 	"time"
 )
@@ -13,6 +14,14 @@ func main() {
 		WriteTimeout: time.Second * 5,
 		ReadTimeout:  time.Second * 5,
 		Prefork:      true,
+	})
+
+	//middleware sederhana
+	app.Use(func(c *fiber.Ctx) error {
+		fmt.Println("middleware before processing request")
+		err := c.Next()
+		fmt.Println("middleware after processing request")
+		return err
 	})
 
 	app.Get("/", func(c *fiber.Ctx) error {
