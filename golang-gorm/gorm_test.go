@@ -2,6 +2,7 @@ package golang_gorm
 
 import (
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 	"strconv"
 	"testing"
 )
@@ -107,4 +108,72 @@ func TestBatchInsert(t *testing.T) {
 	result := OpenConnection().Create(&users)
 	assert.NotNil(t, result)
 	assert.Equal(t, int64(8), result.RowsAffected)
+}
+
+func TestTransaction(t *testing.T) {
+	err := OpenConnection().Transaction(func(tx *gorm.DB) error {
+		err := tx.Create(&User{
+			Id:       "10",
+			Password: "1234",
+			Name: Name{
+				FirstName: "User " + strconv.Itoa(10),
+			},
+		}).Error
+		if err != nil {
+			return err
+		}
+
+		err = tx.Create(&User{
+			Id:       "11",
+			Password: "1234",
+			Name: Name{
+				FirstName: "User " + strconv.Itoa(11),
+			},
+		}).Error
+		if err != nil {
+			return err
+		}
+
+		err = tx.Create(&User{
+			Id:       "12",
+			Password: "1234",
+			Name: Name{
+				FirstName: "User " + strconv.Itoa(12),
+			},
+		}).Error
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	assert.Nil(t, err)
+}
+
+func TestTransactionErrorRollback(t *testing.T) {
+	err := OpenConnection().Transaction(func(tx *gorm.DB) error {
+		err := tx.Create(&User{
+			Id:       "13",
+			Password: "1234",
+			Name: Name{
+				FirstName: "User " + strconv.Itoa(13),
+			},
+		}).Error
+		if err != nil {
+			return err
+		}
+
+		err = tx.Create(&User{
+			Id:       "11",
+			Password: "1234",
+			Name: Name{
+				FirstName: "User " + strconv.Itoa(14),
+			},
+		}).Error
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	assert.NotNil(t, err)
 }
