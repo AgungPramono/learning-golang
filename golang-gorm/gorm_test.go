@@ -253,3 +253,10 @@ func TestQuerySingleObjectInlineCondition(t *testing.T) {
 	assert.Equal(t, "6", user.Id)
 	assert.Equal(t, "User 6", user.Name.FirstName)
 }
+
+func TestQueryAllObject(t *testing.T) {
+	var users []User
+	err := OpenConnection().Find(&users, "id in ?", []string{"1", "2", "3", "4"}).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 4, len(users))
+}
