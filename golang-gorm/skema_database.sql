@@ -29,3 +29,5 @@ select count(*) from users where middle_name='';
 
 SELECT * FROM `users` WHERE first_name like '%User%' AND password='1234';
 SELECT * FROM `users` WHERE first_name like '%User%' OR password='12345';
+
+SELECT * FROM `users` ORDER BY id asc, first_name desc LIMIT 5 OFFSET 5
