@@ -365,3 +365,22 @@ func TestUpdate(t *testing.T) {
 	err = OpenConnection().Save(&user).Error
 	assert.Nil(t, err)
 }
+
+func TestUpdateSelectedColumn(t *testing.T) {
+	err := OpenConnection().Model(&User{}).Where("id=?", "15").Updates(map[string]interface{}{
+		"middle_name": "Purnomo",
+		"last_name":   "",
+	}).Error
+	assert.Nil(t, err)
+
+	err = OpenConnection().Model(&User{}).Where("id=?", "15").Update("password", "rahasialagi").Error
+	assert.Nil(t, err)
+
+	err = OpenConnection().Model(&User{}).Where("id=?", "15").Updates(User{
+		Name: Name{
+			FirstName: "Budiono",
+			LastName:  "Utomo",
+		},
+	}).Error
+	assert.Nil(t, err)
+}
