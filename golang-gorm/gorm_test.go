@@ -233,3 +233,15 @@ func TestManualTransactionError(t *testing.T) {
 		tx.Commit()
 	}
 }
+
+func TestQuerySingleObject(t *testing.T) {
+	user := &User{}
+	err := OpenConnection().First(&user).Error
+	assert.Nil(t, err)
+	assert.Equal(t, "1", user.Id)
+
+	user = &User{}
+	err = OpenConnection().Last(&user).Error
+	assert.Nil(t, err)
+	assert.Equal(t, "9", user.Id)
+}
