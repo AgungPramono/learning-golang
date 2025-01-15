@@ -79,12 +79,12 @@ func TestScanRows(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	user := &User{
-		Id:       "1",
-		Password: "12345",
+		Id:       "15",
+		Password: "rahasia",
 		Name: Name{
-			FirstName:  "Budi",
-			MiddleName: "Siregar",
-			LastName:   "Kapal Laut",
+			FirstName:  "Joko",
+			MiddleName: "",
+			LastName:   "",
 		},
 		Information: "ini akan di ignore",
 	}
@@ -349,4 +349,19 @@ func TestQueryNonModel(t *testing.T) {
 	err := OpenConnection().Model(&User{}).Select("id,first_name,last_name").Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 14, len(users))
+}
+
+func TestUpdate(t *testing.T) {
+	user := User{}
+	err := OpenConnection().Take(&user, "id=?", "15").Error
+	assert.Nil(t, err)
+
+	//ubah data
+	user.Name.MiddleName = "waluyo"
+	user.Name.LastName = "Nugroho"
+	user.Password = "rahasiabanget"
+
+	//simpan data
+	err = OpenConnection().Save(&user).Error
+	assert.Nil(t, err)
 }
