@@ -177,3 +177,59 @@ func TestTransactionErrorRollback(t *testing.T) {
 	})
 	assert.NotNil(t, err)
 }
+
+func TestManualTransaction(t *testing.T) {
+	tx := OpenConnection().Begin()
+	defer tx.Rollback()
+
+	err := tx.Create(&User{
+		Id:       "13",
+		Password: "1234",
+		Name: Name{
+			FirstName: "User " + strconv.Itoa(13),
+		},
+	}).Error
+	assert.Nil(t, err)
+
+	err = tx.Create(&User{
+		Id:       "14",
+		Password: "1234",
+		Name: Name{
+			FirstName: "User " + strconv.Itoa(14),
+		},
+	}).Error
+	assert.Nil(t, err)
+
+	//jika tidak ada error maka lakukan commit
+	if err == nil {
+		tx.Commit()
+	}
+}
+
+func TestManualTransactionError(t *testing.T) {
+	tx := OpenConnection().Begin()
+	defer tx.Rollback()
+
+	err := tx.Create(&User{
+		Id:       "15",
+		Password: "1234",
+		Name: Name{
+			FirstName: "User " + strconv.Itoa(15),
+		},
+	}).Error
+	assert.Nil(t, err)
+
+	err = tx.Create(&User{
+		Id:       "14",
+		Password: "1234",
+		Name: Name{
+			FirstName: "User " + strconv.Itoa(14),
+		},
+	}).Error
+	assert.Nil(t, err)
+
+	//jika tidak ada error maka lakukan commit
+	if err == nil {
+		tx.Commit()
+	}
+}
