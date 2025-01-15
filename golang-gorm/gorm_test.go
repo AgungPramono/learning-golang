@@ -290,3 +290,16 @@ func TestQueryNotOperator(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(users))
 }
+
+func TestSelectField(t *testing.T) {
+	var users []User
+	err := OpenConnection().Select("id", "first_name").Find(&users).Error
+	assert.Nil(t, err)
+	for _, user := range users {
+		assert.NotNil(t, user)
+		assert.NotEqual(t, "", user.Id)
+		assert.NotEqual(t, "", user.Name.FirstName)
+	}
+
+	assert.Equal(t, 14, len(users))
+}
