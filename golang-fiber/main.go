@@ -17,7 +17,7 @@ func main() {
 	})
 
 	//middleware sederhana
-	app.Use(func(c *fiber.Ctx) error {
+	app.Use("/api", func(c *fiber.Ctx) error {
 		fmt.Println("middleware before processing request")
 		err := c.Next()
 		fmt.Println("middleware after processing request")
