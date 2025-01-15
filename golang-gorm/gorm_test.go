@@ -2,6 +2,7 @@ package golang_gorm
 
 import (
 	"github.com/stretchr/testify/assert"
+	"strconv"
 	"testing"
 )
 
@@ -89,4 +90,21 @@ func TestCreateUser(t *testing.T) {
 	response := OpenConnection().Create(&user)
 	assert.Nil(t, response.Error)
 	assert.Equal(t, int64(1), response.RowsAffected)
+}
+
+func TestBatchInsert(t *testing.T) {
+	var users []User
+	for i := 2; i < 10; i++ {
+		users = append(users, User{
+			Id:       strconv.Itoa(i),
+			Password: "1234" + strconv.Itoa(i),
+			Name: Name{
+				FirstName: "User " + strconv.Itoa(i),
+			},
+		})
+	}
+
+	result := OpenConnection().Create(&users)
+	assert.NotNil(t, result)
+	assert.Equal(t, int64(8), result.RowsAffected)
 }
