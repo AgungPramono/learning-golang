@@ -303,3 +303,18 @@ func TestSelectField(t *testing.T) {
 
 	assert.Equal(t, 14, len(users))
 }
+
+func TestStructCondition(t *testing.T) {
+	userCondition := User{
+		Name: Name{
+			FirstName: "User 10",
+			LastName:  "", // tidak bisa harus menggunakan map condition
+		},
+		Password: "1234",
+	}
+
+	var users []User
+	err := OpenConnection().Where(&userCondition).Find(&users).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(users))
+}
