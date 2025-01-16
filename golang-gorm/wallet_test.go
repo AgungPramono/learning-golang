@@ -2,12 +2,13 @@ package golang_gorm
 
 import (
 	"github.com/stretchr/testify/assert"
+	"golang-gorm/model"
 	"gorm.io/gorm/clause"
 	"testing"
 )
 
 func TestCreateWallet(t *testing.T) {
-	wallet := Wallet{
+	wallet := model.Wallet{
 		Id:      "1",
 		UserId:  "3",
 		Balance: 40_000_000,
@@ -17,8 +18,8 @@ func TestCreateWallet(t *testing.T) {
 }
 
 func TestRetrieveRelationUserWallet(t *testing.T) {
-	var user User
-	result := Db().Model(&User{}).Preload("Wallet").Take(&user, "id=?", "3")
+	var user model.User
+	result := Db().Model(&model.User{}).Preload("Wallet").Take(&user, "id=?", "3")
 	assert.Nil(t, result.Error)
 
 	assert.Equal(t, "3", user.Id)
@@ -26,8 +27,8 @@ func TestRetrieveRelationUserWallet(t *testing.T) {
 }
 
 func TestRetrieveRelationUserWalletJoin(t *testing.T) {
-	var user User
-	result := Db().Model(&User{}).Joins("Wallet").Take(&user, "users.id=?", "3")
+	var user model.User
+	result := Db().Model(&model.User{}).Joins("Wallet").Take(&user, "users.id=?", "3")
 	assert.Nil(t, result.Error)
 
 	assert.Equal(t, "3", user.Id)
@@ -35,13 +36,13 @@ func TestRetrieveRelationUserWalletJoin(t *testing.T) {
 }
 
 func TestAutoCreateUpdateUserWallet(t *testing.T) {
-	user := User{
+	user := model.User{
 		Id:       "20",
 		Password: "rahasia20",
-		Name: Name{
+		Name: model.Name{
 			FirstName: "Jumadi 20",
 		},
-		Wallet: Wallet{
+		Wallet: model.Wallet{
 			Id:      "2",
 			UserId:  "20",
 			Balance: 5_000_000,
@@ -52,13 +53,13 @@ func TestAutoCreateUpdateUserWallet(t *testing.T) {
 	assert.Nil(t, err)
 }
 func TestSkipAutoCreateUpdateUserWallet(t *testing.T) {
-	user := User{
+	user := model.User{
 		Id:       "21",
 		Password: "rahasia21",
-		Name: Name{
+		Name: model.Name{
 			FirstName: "Suhadi 21",
 		},
-		Wallet: Wallet{
+		Wallet: model.Wallet{
 			Id:      "3",
 			UserId:  "21",
 			Balance: 2_000_000,

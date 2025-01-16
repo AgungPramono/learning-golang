@@ -2,6 +2,7 @@ package golang_gorm
 
 import (
 	"github.com/stretchr/testify/assert"
+	"golang-gorm/model"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"strconv"
@@ -79,10 +80,10 @@ func TestScanRows(t *testing.T) {
 }
 
 func TestCreateUser(t *testing.T) {
-	user := &User{
+	user := &model.User{
 		Id:       "15",
 		Password: "rahasia",
-		Name: Name{
+		Name: model.Name{
 			FirstName:  "Joko",
 			MiddleName: "",
 			LastName:   "",
@@ -95,12 +96,12 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestBatchInsert(t *testing.T) {
-	var users []User
+	var users []model.User
 	for i := 2; i < 10; i++ {
-		users = append(users, User{
+		users = append(users, model.User{
 			Id:       strconv.Itoa(i),
 			Password: "1234" + strconv.Itoa(i),
-			Name: Name{
+			Name: model.Name{
 				FirstName: "User " + strconv.Itoa(i),
 			},
 		})
@@ -113,10 +114,10 @@ func TestBatchInsert(t *testing.T) {
 
 func TestTransaction(t *testing.T) {
 	err := Db().Transaction(func(tx *gorm.DB) error {
-		err := tx.Create(&User{
+		err := tx.Create(&model.User{
 			Id:       "10",
 			Password: "1234",
-			Name: Name{
+			Name: model.Name{
 				FirstName: "User " + strconv.Itoa(10),
 			},
 		}).Error
@@ -124,10 +125,10 @@ func TestTransaction(t *testing.T) {
 			return err
 		}
 
-		err = tx.Create(&User{
+		err = tx.Create(&model.User{
 			Id:       "11",
 			Password: "1234",
-			Name: Name{
+			Name: model.Name{
 				FirstName: "User " + strconv.Itoa(11),
 			},
 		}).Error
@@ -135,10 +136,10 @@ func TestTransaction(t *testing.T) {
 			return err
 		}
 
-		err = tx.Create(&User{
+		err = tx.Create(&model.User{
 			Id:       "12",
 			Password: "1234",
-			Name: Name{
+			Name: model.Name{
 				FirstName: "User " + strconv.Itoa(12),
 			},
 		}).Error
@@ -153,10 +154,10 @@ func TestTransaction(t *testing.T) {
 
 func TestTransactionErrorRollback(t *testing.T) {
 	err := Db().Transaction(func(tx *gorm.DB) error {
-		err := tx.Create(&User{
+		err := tx.Create(&model.User{
 			Id:       "13",
 			Password: "1234",
-			Name: Name{
+			Name: model.Name{
 				FirstName: "User " + strconv.Itoa(13),
 			},
 		}).Error
@@ -164,10 +165,10 @@ func TestTransactionErrorRollback(t *testing.T) {
 			return err
 		}
 
-		err = tx.Create(&User{
+		err = tx.Create(&model.User{
 			Id:       "11",
 			Password: "1234",
-			Name: Name{
+			Name: model.Name{
 				FirstName: "User " + strconv.Itoa(14),
 			},
 		}).Error
@@ -183,19 +184,19 @@ func TestManualTransaction(t *testing.T) {
 	tx := Db().Begin()
 	defer tx.Rollback()
 
-	err := tx.Create(&User{
+	err := tx.Create(&model.User{
 		Id:       "13",
 		Password: "1234",
-		Name: Name{
+		Name: model.Name{
 			FirstName: "User " + strconv.Itoa(13),
 		},
 	}).Error
 	assert.Nil(t, err)
 
-	err = tx.Create(&User{
+	err = tx.Create(&model.User{
 		Id:       "14",
 		Password: "1234",
-		Name: Name{
+		Name: model.Name{
 			FirstName: "User " + strconv.Itoa(14),
 		},
 	}).Error
@@ -211,19 +212,19 @@ func TestManualTransactionError(t *testing.T) {
 	tx := Db().Begin()
 	defer tx.Rollback()
 
-	err := tx.Create(&User{
+	err := tx.Create(&model.User{
 		Id:       "15",
 		Password: "1234",
-		Name: Name{
+		Name: model.Name{
 			FirstName: "User " + strconv.Itoa(15),
 		},
 	}).Error
 	assert.Nil(t, err)
 
-	err = tx.Create(&User{
+	err = tx.Create(&model.User{
 		Id:       "14",
 		Password: "1234",
-		Name: Name{
+		Name: model.Name{
 			FirstName: "User " + strconv.Itoa(14),
 		},
 	}).Error
@@ -236,19 +237,19 @@ func TestManualTransactionError(t *testing.T) {
 }
 
 func TestQuerySingleObject(t *testing.T) {
-	user := &User{}
+	user := &model.User{}
 	err := Db().First(&user).Error
 	assert.Nil(t, err)
 	assert.Equal(t, "1", user.Id)
 
-	user = &User{}
+	user = &model.User{}
 	err = Db().Last(&user).Error
 	assert.Nil(t, err)
 	assert.Equal(t, "9", user.Id)
 }
 
 func TestQuerySingleObjectInlineCondition(t *testing.T) {
-	user := &User{}
+	user := &model.User{}
 	err := Db().Take(&user, "id=?", "6").Error
 	assert.Nil(t, err)
 	assert.Equal(t, "6", user.Id)
@@ -256,14 +257,14 @@ func TestQuerySingleObjectInlineCondition(t *testing.T) {
 }
 
 func TestQueryAllObject(t *testing.T) {
-	var users []User
+	var users []model.User
 	err := Db().Find(&users, "id in ?", []string{"1", "2", "3", "4"}).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 4, len(users))
 }
 
 func TestQueryCondition(t *testing.T) {
-	var users []User
+	var users []model.User
 	err := Db().
 		Where("first_name like ?", "%User%").
 		Where("password=?", "1234").
@@ -273,7 +274,7 @@ func TestQueryCondition(t *testing.T) {
 }
 
 func TestQueryOrOperator(t *testing.T) {
-	var users []User
+	var users []model.User
 	err := Db().
 		Where("first_name like ?", "%User%").
 		Or("password=?", "12345").
@@ -283,7 +284,7 @@ func TestQueryOrOperator(t *testing.T) {
 }
 
 func TestQueryNotOperator(t *testing.T) {
-	var users []User
+	var users []model.User
 	err := Db().
 		Not("first_name like ?", "%User%").
 		Where("password=?", "12345").
@@ -293,7 +294,7 @@ func TestQueryNotOperator(t *testing.T) {
 }
 
 func TestSelectField(t *testing.T) {
-	var users []User
+	var users []model.User
 	err := Db().Select("id", "first_name").Find(&users).Error
 	assert.Nil(t, err)
 	for _, user := range users {
@@ -306,15 +307,15 @@ func TestSelectField(t *testing.T) {
 }
 
 func TestStructCondition(t *testing.T) {
-	userCondition := User{
-		Name: Name{
+	userCondition := model.User{
+		Name: model.Name{
 			FirstName: "User 10",
 			LastName:  "", // tidak bisa harus menggunakan map condition
 		},
 		Password: "1234",
 	}
 
-	var users []User
+	var users []model.User
 	err := Db().Where(&userCondition).Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(users))
@@ -326,14 +327,14 @@ func TestMapCondition(t *testing.T) {
 		"last_name":   "",
 	}
 
-	var users []User
+	var users []model.User
 	err := Db().Where(mapCondition).Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 13, len(users))
 }
 
 func TestOrderLimitAndOffset(t *testing.T) {
-	var users []User
+	var users []model.User
 	err := Db().Order("id asc, first_name desc").Limit(5).Offset(5).Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 5, len(users))
@@ -347,13 +348,13 @@ type UserResponse struct {
 
 func TestQueryNonModel(t *testing.T) {
 	var users []UserResponse
-	err := Db().Model(&User{}).Select("id,first_name,last_name").Find(&users).Error
+	err := Db().Model(&model.User{}).Select("id,first_name,last_name").Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 14, len(users))
 }
 
 func TestUpdate(t *testing.T) {
-	user := User{}
+	user := model.User{}
 	err := Db().Take(&user, "id=?", "15").Error
 	assert.Nil(t, err)
 
@@ -368,17 +369,17 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestUpdateSelectedColumn(t *testing.T) {
-	err := Db().Model(&User{}).Where("id=?", "15").Updates(map[string]interface{}{
+	err := Db().Model(&model.User{}).Where("id=?", "15").Updates(map[string]interface{}{
 		"middle_name": "Purnomo",
 		"last_name":   "",
 	}).Error
 	assert.Nil(t, err)
 
-	err = Db().Model(&User{}).Where("id=?", "15").Update("password", "rahasialagi").Error
+	err = Db().Model(&model.User{}).Where("id=?", "15").Update("password", "rahasialagi").Error
 	assert.Nil(t, err)
 
-	err = Db().Model(&User{}).Where("id=?", "15").Updates(User{
-		Name: Name{
+	err = Db().Model(&model.User{}).Where("id=?", "15").Updates(model.User{
+		Name: model.Name{
 			FirstName: "Budiono",
 			LastName:  "Utomo",
 		},
@@ -387,7 +388,7 @@ func TestUpdateSelectedColumn(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	var user User
+	var user model.User
 	//cari data dulu
 	result := Db().Take(&user, "id=?", "4")
 	assert.Nil(t, result.Error)
@@ -396,18 +397,18 @@ func TestDelete(t *testing.T) {
 	assert.Nil(t, result.Error)
 
 	//tanpa cari dulu
-	result = Db().Delete(&User{}, "id=?", "5")
+	result = Db().Delete(&model.User{}, "id=?", "5")
 	assert.Nil(t, result.Error)
 	//
 	////delete dengan where
-	result = Db().Where("id=?", "6").Delete(&User{})
+	result = Db().Where("id=?", "6").Delete(&model.User{})
 	assert.Nil(t, result.Error)
 }
 
 func TestLock(t *testing.T) {
 	err := Db().Transaction(func(tx *gorm.DB) error {
 
-		var user User
+		var user model.User
 		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Take(&user, "id=?", "3").Error
 		if err != nil {
 			return err

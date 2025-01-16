@@ -3,11 +3,12 @@ package golang_gorm
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"golang-gorm/model"
 	"testing"
 )
 
 func TestSoftDelete(t *testing.T) {
-	todo := Todo{
+	todo := model.Todo{
 		UserId:      "6",
 		Title:       "Todo 6",
 		Description: "Description 6",
@@ -20,12 +21,12 @@ func TestSoftDelete(t *testing.T) {
 	assert.Nil(t, result.Error)
 	assert.NotNil(t, todo.DeletedAt)
 
-	var todos []Todo
+	var todos []model.Todo
 	result = Db().Find(&todos)
 	assert.Nil(t, result.Error)
 	assert.Equal(t, 0, len(todos))
 
-	var deleteTodo Todo
+	var deleteTodo model.Todo
 	result = Db().Take(&deleteTodo, "id=?", "6")
 	assert.NotNil(t, result.Error)
 }
@@ -35,7 +36,7 @@ func TestSoftDelete(t *testing.T) {
 query dengan mengabaikan data yang sudah di hapus dengan metode Soft Delete
 */
 func TestUnscoped(t *testing.T) {
-	var todo Todo
+	var todo model.Todo
 	err := Db().Unscoped().First(&todo, "id=?", "7").Error
 	assert.Nil(t, err)
 	fmt.Println(todo)
@@ -43,7 +44,7 @@ func TestUnscoped(t *testing.T) {
 	err = Db().Unscoped().Delete(&todo).Error
 	assert.Nil(t, err)
 
-	var todos []Todo
+	var todos []model.Todo
 	err = Db().Unscoped().Find(&todos).Error
 	assert.Nil(t, err)
 }

@@ -3,6 +3,7 @@ package golang_gorm
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"golang-gorm/model"
 	"gorm.io/gorm/clause"
 	"strconv"
 	"testing"
@@ -10,7 +11,7 @@ import (
 
 func TestAutoIncrement(t *testing.T) {
 	for i := 0; i < 15; i++ {
-		userLog := UserLog{
+		userLog := model.UserLog{
 			UserId: strconv.Itoa(i),
 			Action: "Test Action",
 		}
@@ -22,7 +23,7 @@ func TestAutoIncrement(t *testing.T) {
 }
 
 func TestSaveOrUpdate(t *testing.T) {
-	userLog := UserLog{
+	userLog := model.UserLog{
 		UserId: "15",
 		Action: "Test Action 15",
 	}
@@ -37,9 +38,9 @@ func TestSaveOrUpdate(t *testing.T) {
 }
 
 func TestSaveOrUpdateNonAutoIncrement(t *testing.T) {
-	user := User{
+	user := model.User{
 		Id: "99",
-		Name: Name{
+		Name: model.Name{
 			FirstName: "Joko",
 		},
 	}
@@ -52,9 +53,9 @@ func TestSaveOrUpdateNonAutoIncrement(t *testing.T) {
 }
 
 func TestConflict(t *testing.T) {
-	user := User{
+	user := model.User{
 		Id: "100",
-		Name: Name{
+		Name: model.Name{
 			FirstName: "Joko 100",
 		},
 	}

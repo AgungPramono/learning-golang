@@ -1,4 +1,4 @@
-package golang_gorm
+package model
 
 import "gorm.io/gorm"
 
