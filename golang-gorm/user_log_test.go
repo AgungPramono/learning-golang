@@ -19,3 +19,18 @@ func TestAutoIncrement(t *testing.T) {
 		fmt.Println(userLog.ID)
 	}
 }
+
+func TestSaveOrUpdate(t *testing.T) {
+	userLog := UserLog{
+		UserId: "15",
+		Action: "Test Action 15",
+	}
+	result := Db().Save(&userLog)
+	assert.Nil(t, result.Error)
+	assert.Equal(t, "Test Action 15", userLog.Action)
+
+	userLog.UserId = "2"
+	userLog.Action = "Test Action 15 update"
+	err := Db().Save(&userLog).Error
+	assert.Nil(t, err)
+}
