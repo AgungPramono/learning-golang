@@ -9,6 +9,8 @@ type Wallet struct {
 
 	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt time.Time `gorm:"column:updated_at;autoCreateTime;autoUpdateTime"`
+
+	User *User `gorm:"foreignkey:user_id;references:id"`
 }
 
 func (w *Wallet) TableName() string {
