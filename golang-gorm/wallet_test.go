@@ -32,3 +32,21 @@ func TestRetrieveRelationUserWalletJoin(t *testing.T) {
 	assert.Equal(t, "3", user.Id)
 	assert.Equal(t, "1", user.Wallet.Id)
 }
+
+func TestAutoCreateUpdateUserWallet(t *testing.T) {
+	user := User{
+		Id:       "20",
+		Password: "rahasia20",
+		Name: Name{
+			FirstName: "Jumadi 20",
+		},
+		Wallet: Wallet{
+			Id:      "2",
+			UserId:  "20",
+			Balance: 5_000_000,
+		},
+	}
+
+	err := Db().Create(&user).Error
+	assert.Nil(t, err)
+}
