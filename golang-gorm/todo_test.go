@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestDeleteTodo(t *testing.T) {
+func TestSoftDelete(t *testing.T) {
 	todo := Todo{
 		UserId:      "6",
 		Title:       "Todo 6",
@@ -36,7 +36,7 @@ query dengan mengabaikan data yang sudah di hapus dengan metode Soft Delete
 */
 func TestUnscoped(t *testing.T) {
 	var todo Todo
-	err := Db().Unscoped().First(&todo, "id=?", "6").Error
+	err := Db().Unscoped().First(&todo, "id=?", "7").Error
 	assert.Nil(t, err)
 	fmt.Println(todo)
 
