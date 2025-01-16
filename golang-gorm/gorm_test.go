@@ -384,3 +384,22 @@ func TestUpdateSelectedColumn(t *testing.T) {
 	}).Error
 	assert.Nil(t, err)
 }
+
+func TestDelete(t *testing.T) {
+	var user User
+	//cari data dulu
+	result := Db().Take(&user, "id=?", "4")
+	assert.Nil(t, result.Error)
+	
+	result = Db().Delete(&user)
+	assert.Nil(t, result.Error)
+
+	//tanpa cari dulu
+	result = Db().Delete(&User{}, "id=?", "5")
+	assert.Nil(t, result.Error)
+	//
+	////delete dengan where
+	result = Db().Where("id=?", "6").Delete(&User{})
+	assert.Nil(t, result.Error)
+
+}
