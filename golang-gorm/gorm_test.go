@@ -8,21 +8,21 @@ import (
 )
 
 func TestOpenConnection(t *testing.T) {
-	connection := OpenConnection()
+	connection := Db()
 	assert.NotNil(t, connection)
 }
 
 func TestExecuteRawSql(t *testing.T) {
-	err := OpenConnection().Exec("insert into sample(id, name) value (?,?)", "1", "agung").Error
+	err := Db().Exec("insert into sample(id, name) value (?,?)", "1", "agung").Error
 	assert.Nil(t, err)
 
-	err = OpenConnection().Exec("insert into sample(id, name) value (?,?)", "2", "joko").Error
+	err = Db().Exec("insert into sample(id, name) value (?,?)", "2", "joko").Error
 	assert.Nil(t, err)
 
-	err = OpenConnection().Exec("insert into sample(id, name) value (?,?)", "3", "ahmad").Error
+	err = Db().Exec("insert into sample(id, name) value (?,?)", "3", "ahmad").Error
 	assert.Nil(t, err)
 
-	err = OpenConnection().Exec("insert into sample(id, name) value (?,?)", "4", "budi").Error
+	err = Db().Exec("insert into sample(id, name) value (?,?)", "4", "budi").Error
 	assert.Nil(t, err)
 }
 
@@ -33,18 +33,18 @@ type Sample struct {
 
 func TestRawSQl(t *testing.T) {
 	var sample Sample
-	err := OpenConnection().Raw("select id,name from sample where id=?", "1").Scan(&sample).Error
+	err := Db().Raw("select id,name from sample where id=?", "1").Scan(&sample).Error
 	assert.Nil(t, err)
 	assert.Equal(t, "agung", sample.Name)
 
 	var samples []Sample
-	err = OpenConnection().Raw("select id,name from sample").Scan(&samples).Error
+	err = Db().Raw("select id,name from sample").Scan(&samples).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 4, len(samples))
 }
 
 func TestSqlRows(t *testing.T) {
-	rows, err := OpenConnection().Raw("select id,name from sample").Rows()
+	rows, err := Db().Raw("select id,name from sample").Rows()
 	assert.Nil(t, err)
 	defer rows.Close()
 	var samples []Sample
@@ -65,13 +65,13 @@ func TestSqlRows(t *testing.T) {
 }
 
 func TestScanRows(t *testing.T) {
-	rows, err := OpenConnection().Raw("select id,name from sample").Rows()
+	rows, err := Db().Raw("select id,name from sample").Rows()
 	assert.Nil(t, err)
 	defer rows.Close()
 	var samples []Sample
 
 	for rows.Next() {
-		err := OpenConnection().ScanRows(rows, &samples)
+		err := Db().ScanRows(rows, &samples)
 		assert.Nil(t, err)
 	}
 	assert.Equal(t, 4, len(samples))
@@ -88,7 +88,7 @@ func TestCreateUser(t *testing.T) {
 		},
 		Information: "ini akan di ignore",
 	}
-	response := OpenConnection().Create(&user)
+	response := Db().Create(&user)
 	assert.Nil(t, response.Error)
 	assert.Equal(t, int64(1), response.RowsAffected)
 }
@@ -105,13 +105,13 @@ func TestBatchInsert(t *testing.T) {
 		})
 	}
 
-	result := OpenConnection().Create(&users)
+	result := Db().Create(&users)
 	assert.NotNil(t, result)
 	assert.Equal(t, int64(8), result.RowsAffected)
 }
 
 func TestTransaction(t *testing.T) {
-	err := OpenConnection().Transaction(func(tx *gorm.DB) error {
+	err := Db().Transaction(func(tx *gorm.DB) error {
 		err := tx.Create(&User{
 			Id:       "10",
 			Password: "1234",
@@ -151,7 +151,7 @@ func TestTransaction(t *testing.T) {
 }
 
 func TestTransactionErrorRollback(t *testing.T) {
-	err := OpenConnection().Transaction(func(tx *gorm.DB) error {
+	err := Db().Transaction(func(tx *gorm.DB) error {
 		err := tx.Create(&User{
 			Id:       "13",
 			Password: "1234",
@@ -179,7 +179,7 @@ func TestTransactionErrorRollback(t *testing.T) {
 }
 
 func TestManualTransaction(t *testing.T) {
-	tx := OpenConnection().Begin()
+	tx := Db().Begin()
 	defer tx.Rollback()
 
 	err := tx.Create(&User{
@@ -207,7 +207,7 @@ func TestManualTransaction(t *testing.T) {
 }
 
 func TestManualTransactionError(t *testing.T) {
-	tx := OpenConnection().Begin()
+	tx := Db().Begin()
 	defer tx.Rollback()
 
 	err := tx.Create(&User{
@@ -236,19 +236,19 @@ func TestManualTransactionError(t *testing.T) {
 
 func TestQuerySingleObject(t *testing.T) {
 	user := &User{}
-	err := OpenConnection().First(&user).Error
+	err := Db().First(&user).Error
 	assert.Nil(t, err)
 	assert.Equal(t, "1", user.Id)
 
 	user = &User{}
-	err = OpenConnection().Last(&user).Error
+	err = Db().Last(&user).Error
 	assert.Nil(t, err)
 	assert.Equal(t, "9", user.Id)
 }
 
 func TestQuerySingleObjectInlineCondition(t *testing.T) {
 	user := &User{}
-	err := OpenConnection().Take(&user, "id=?", "6").Error
+	err := Db().Take(&user, "id=?", "6").Error
 	assert.Nil(t, err)
 	assert.Equal(t, "6", user.Id)
 	assert.Equal(t, "User 6", user.Name.FirstName)
@@ -256,14 +256,14 @@ func TestQuerySingleObjectInlineCondition(t *testing.T) {
 
 func TestQueryAllObject(t *testing.T) {
 	var users []User
-	err := OpenConnection().Find(&users, "id in ?", []string{"1", "2", "3", "4"}).Error
+	err := Db().Find(&users, "id in ?", []string{"1", "2", "3", "4"}).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 4, len(users))
 }
 
 func TestQueryCondition(t *testing.T) {
 	var users []User
-	err := OpenConnection().
+	err := Db().
 		Where("first_name like ?", "%User%").
 		Where("password=?", "1234").
 		Find(&users).Error
@@ -273,7 +273,7 @@ func TestQueryCondition(t *testing.T) {
 
 func TestQueryOrOperator(t *testing.T) {
 	var users []User
-	err := OpenConnection().
+	err := Db().
 		Where("first_name like ?", "%User%").
 		Or("password=?", "12345").
 		Find(&users).Error
@@ -283,7 +283,7 @@ func TestQueryOrOperator(t *testing.T) {
 
 func TestQueryNotOperator(t *testing.T) {
 	var users []User
-	err := OpenConnection().
+	err := Db().
 		Not("first_name like ?", "%User%").
 		Where("password=?", "12345").
 		Find(&users).Error
@@ -293,7 +293,7 @@ func TestQueryNotOperator(t *testing.T) {
 
 func TestSelectField(t *testing.T) {
 	var users []User
-	err := OpenConnection().Select("id", "first_name").Find(&users).Error
+	err := Db().Select("id", "first_name").Find(&users).Error
 	assert.Nil(t, err)
 	for _, user := range users {
 		assert.NotNil(t, user)
@@ -314,7 +314,7 @@ func TestStructCondition(t *testing.T) {
 	}
 
 	var users []User
-	err := OpenConnection().Where(&userCondition).Find(&users).Error
+	err := Db().Where(&userCondition).Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(users))
 }
@@ -326,14 +326,14 @@ func TestMapCondition(t *testing.T) {
 	}
 
 	var users []User
-	err := OpenConnection().Where(mapCondition).Find(&users).Error
+	err := Db().Where(mapCondition).Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 13, len(users))
 }
 
 func TestOrderLimitAndOffset(t *testing.T) {
 	var users []User
-	err := OpenConnection().Order("id asc, first_name desc").Limit(5).Offset(5).Find(&users).Error
+	err := Db().Order("id asc, first_name desc").Limit(5).Offset(5).Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 5, len(users))
 }
@@ -346,14 +346,14 @@ type UserResponse struct {
 
 func TestQueryNonModel(t *testing.T) {
 	var users []UserResponse
-	err := OpenConnection().Model(&User{}).Select("id,first_name,last_name").Find(&users).Error
+	err := Db().Model(&User{}).Select("id,first_name,last_name").Find(&users).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 14, len(users))
 }
 
 func TestUpdate(t *testing.T) {
 	user := User{}
-	err := OpenConnection().Take(&user, "id=?", "15").Error
+	err := Db().Take(&user, "id=?", "15").Error
 	assert.Nil(t, err)
 
 	//ubah data
@@ -362,21 +362,21 @@ func TestUpdate(t *testing.T) {
 	user.Password = "rahasiabanget"
 
 	//simpan data
-	err = OpenConnection().Save(&user).Error
+	err = Db().Save(&user).Error
 	assert.Nil(t, err)
 }
 
 func TestUpdateSelectedColumn(t *testing.T) {
-	err := OpenConnection().Model(&User{}).Where("id=?", "15").Updates(map[string]interface{}{
+	err := Db().Model(&User{}).Where("id=?", "15").Updates(map[string]interface{}{
 		"middle_name": "Purnomo",
 		"last_name":   "",
 	}).Error
 	assert.Nil(t, err)
 
-	err = OpenConnection().Model(&User{}).Where("id=?", "15").Update("password", "rahasialagi").Error
+	err = Db().Model(&User{}).Where("id=?", "15").Update("password", "rahasialagi").Error
 	assert.Nil(t, err)
 
-	err = OpenConnection().Model(&User{}).Where("id=?", "15").Updates(User{
+	err = Db().Model(&User{}).Where("id=?", "15").Updates(User{
 		Name: Name{
 			FirstName: "Budiono",
 			LastName:  "Utomo",
