@@ -25,12 +25,27 @@ func TestSaveOrUpdate(t *testing.T) {
 		UserId: "15",
 		Action: "Test Action 15",
 	}
-	result := Db().Save(&userLog)
+	result := Db().Save(&userLog) //insert
 	assert.Nil(t, result.Error)
 	assert.Equal(t, "Test Action 15", userLog.Action)
 
 	userLog.UserId = "2"
 	userLog.Action = "Test Action 15 update"
-	err := Db().Save(&userLog).Error
+	err := Db().Save(&userLog).Error //update
+	assert.Nil(t, err)
+}
+
+func TestSaveOrUpdateNonAutoIncrement(t *testing.T) {
+	user := User{
+		Id: "99",
+		Name: Name{
+			FirstName: "Joko",
+		},
+	}
+	err := Db().Save(&user).Error //insert
+	assert.Nil(t, err)
+
+	user.Name.FirstName = "joko Pitono 99"
+	err = Db().Save(&user).Error //update
 	assert.Nil(t, err)
 }
