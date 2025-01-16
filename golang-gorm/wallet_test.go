@@ -23,3 +23,12 @@ func TestRetrieveRelationUserWallet(t *testing.T) {
 	assert.Equal(t, "3", user.Id)
 	assert.Equal(t, "3", user.Wallet.Id)
 }
+
+func TestRetrieveRelationUserWalletJoin(t *testing.T) {
+	var user User
+	result := Db().Model(&User{}).Joins("Wallet").Take(&user, "users.id=?", "3")
+	assert.Nil(t, result.Error)
+
+	assert.Equal(t, "3", user.Id)
+	assert.Equal(t, "1", user.Wallet.Id)
+}
