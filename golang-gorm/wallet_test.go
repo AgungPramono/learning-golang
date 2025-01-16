@@ -2,6 +2,7 @@ package golang_gorm
 
 import (
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm/clause"
 	"testing"
 )
 
@@ -48,5 +49,22 @@ func TestAutoCreateUpdateUserWallet(t *testing.T) {
 	}
 
 	err := Db().Create(&user).Error
+	assert.Nil(t, err)
+}
+func TestSkipAutoCreateUpdateUserWallet(t *testing.T) {
+	user := User{
+		Id:       "21",
+		Password: "rahasia21",
+		Name: Name{
+			FirstName: "Suhadi 21",
+		},
+		Wallet: Wallet{
+			Id:      "3",
+			UserId:  "21",
+			Balance: 2_000_000,
+		},
+	}
+
+	err := Db().Omit(clause.Associations).Create(&user).Error
 	assert.Nil(t, err)
 }
