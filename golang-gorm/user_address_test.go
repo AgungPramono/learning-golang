@@ -18,7 +18,7 @@ func TestCreateUserAddresses(t *testing.T) {
 			UserId:  "22",
 			Balance: 1_000_000,
 		},
-		Address: []model.Address{
+		Addresses: []model.Address{
 			{
 				UserId:  "22",
 				Address: "Surabaya",
@@ -31,5 +31,17 @@ func TestCreateUserAddresses(t *testing.T) {
 	}
 
 	err := Db().Create(&user).Error
+	assert.Nil(t, err)
+}
+
+func TestPreloadJoinOneToMany(t *testing.T) {
+	var userPreload []model.User
+	err := Db().Model(&model.User{}).Preload("Address").Joins("Wallet").Find(&userPreload).Error
+	assert.Nil(t, err)
+}
+
+func TestTakePreloadJoinOneToMany(t *testing.T) {
+	var user model.User
+	err := Db().Model(&model.User{}).Preload("Addresses").Joins("Wallet").Take(&user, "users.id=?", "22").Error
 	assert.Nil(t, err)
 }
