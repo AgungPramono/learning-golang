@@ -46,3 +46,17 @@ truncate table user_log;
 
 alter table user_log modify created_at BIGINT NOT NULL ;
 alter table user_log modify updated_at BIGINT NOT NULL ;
+
+create table todos
+(
+    id int auto_increment,
+    user_id varchar(100) not null ,
+    title varchar(100)not null ,
+    description text null,
+    created_at timestamp not null default current_timestamp,
+    updated_at timestamp not null default current_timestamp on update current_timestamp,
+    deleted_at timestamp null,
+    primary key (id)
+)engine =InnoDB;
+
+select * from todos;

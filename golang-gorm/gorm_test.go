@@ -390,7 +390,7 @@ func TestDelete(t *testing.T) {
 	//cari data dulu
 	result := Db().Take(&user, "id=?", "4")
 	assert.Nil(t, result.Error)
-	
+
 	result = Db().Delete(&user)
 	assert.Nil(t, result.Error)
 
