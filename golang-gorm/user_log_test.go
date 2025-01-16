@@ -3,6 +3,7 @@ package golang_gorm
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm/clause"
 	"strconv"
 	"testing"
 )
@@ -47,5 +48,18 @@ func TestSaveOrUpdateNonAutoIncrement(t *testing.T) {
 
 	user.Name.FirstName = "joko Pitono 99"
 	err = Db().Save(&user).Error //update
+	assert.Nil(t, err)
+}
+
+func TestConflict(t *testing.T) {
+	user := User{
+		Id: "100",
+		Name: Name{
+			FirstName: "Joko 100",
+		},
+	}
+	err := Db().Clauses(clause.OnConflict{
+		UpdateAll: true},
+	).Create(&user).Error //insert
 	assert.Nil(t, err)
 }
