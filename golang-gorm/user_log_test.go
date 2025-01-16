@@ -3,13 +3,14 @@ package golang_gorm
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"strconv"
 	"testing"
 )
 
 func TestAutoIncrement(t *testing.T) {
 	for i := 0; i < 15; i++ {
 		userLog := UserLog{
-			UserId: "1",
+			UserId: strconv.Itoa(i),
 			Action: "Test Action",
 		}
 		result := Db().Create(&userLog)

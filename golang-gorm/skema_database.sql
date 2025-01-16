@@ -42,3 +42,7 @@ create table user_log(
 )engine =InnoDB;
 
 select * from user_log;
+truncate table user_log;
+
+alter table user_log modify created_at BIGINT NOT NULL ;
+alter table user_log modify updated_at BIGINT NOT NULL ;
