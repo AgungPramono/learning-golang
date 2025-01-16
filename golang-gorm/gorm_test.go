@@ -3,6 +3,7 @@ package golang_gorm
 import (
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"strconv"
 	"testing"
 )
@@ -401,5 +402,21 @@ func TestDelete(t *testing.T) {
 	////delete dengan where
 	result = Db().Where("id=?", "6").Delete(&User{})
 	assert.Nil(t, result.Error)
+}
 
+func TestLock(t *testing.T) {
+	err := Db().Transaction(func(tx *gorm.DB) error {
+
+		var user User
+		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).Take(&user, "id=?", "3").Error
+		if err != nil {
+			return err
+		}
+
+		user.Name.FirstName = "Joko"
+		user.Name.MiddleName = "Anwar"
+		err = tx.Save(&user).Error
+		return err
+	})
+	assert.Nil(t, err)
 }
