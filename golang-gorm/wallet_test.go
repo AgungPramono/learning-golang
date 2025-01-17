@@ -87,3 +87,15 @@ func TestPreloadAll(t *testing.T) {
 	err := Db().Preload(clause.Associations).Take(&user, "id=?", "3").Error
 	assert.Nil(t, err)
 }
+
+func TestJoinQuery(t *testing.T) {
+	var user []model.User
+	err := Db().Joins("join wallets on wallets.user_id = users.id").Find(&user).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 3, len(user))
+
+	user = []model.User{}
+	err = Db().Joins("Wallet").Find(&user).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 13, len(user))
+}
