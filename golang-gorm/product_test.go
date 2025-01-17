@@ -3,6 +3,7 @@ package golang_gorm
 import (
 	"github.com/stretchr/testify/assert"
 	"golang-gorm/model"
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -55,4 +56,48 @@ func TestAssociationFind(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, 1, len(user))
+}
+
+func TestAssociationAdd(t *testing.T) {
+	var user model.User
+	err := Db().Take(&user, "id=?", "3").Error
+	assert.Nil(t, err)
+
+	var product model.Product
+	err = Db().Take(&product, "id=?", "P001").Error
+	assert.Nil(t, err)
+
+	err = Db().Model(&product).Association("LikedByUsers").Append(&user)
+	assert.Nil(t, err)
+}
+
+func TestAssociationReplace(t *testing.T) {
+	err := Db().Transaction(func(tx *gorm.DB) error {
+		var user model.User
+		err := tx.Take(&user, "id=?", "20").Error
+		assert.Nil(t, err)
+
+		wallet := model.Wallet{
+			Id:      "4",
+			UserId:  user.Id,
+			Balance: 1000000,
+		}
+
+		err = tx.Model(&user).Association("Wallet").Append(&wallet)
+		return err
+	})
+	assert.Nil(t, err)
+}
+
+func TestAssociationDelete(t *testing.T) {
+	var user model.User
+	err := Db().Take(&user, "id=?", "3").Error
+	assert.Nil(t, err)
+
+	var product model.Product
+	err = Db().Take(&product, "id=?", "P001").Error
+	assert.Nil(t, err)
+
+	err = Db().Model(&product).Association("LikedByUsers").Delete(&user)
+	assert.Nil(t, err)
 }
