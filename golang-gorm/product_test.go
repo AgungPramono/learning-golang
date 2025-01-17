@@ -42,3 +42,17 @@ func TestPreloadManyToManyUser(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 1, len(user.LikeProducts))
 }
+
+func TestAssociationFind(t *testing.T) {
+	//select produk dulu
+	var product model.Product
+	err := Db().Take(&product, "id=?", "P001").Error
+	assert.Nil(t, err)
+
+	//cari User yang menyukai produk P001 dengan first name like 'ahmad'
+	var user []model.User
+	err = Db().Model(&product).Where("users.first_name LIKE ?", "ahmad%").Association("LikedByUsers").Find(&user)
+	assert.Nil(t, err)
+
+	assert.Equal(t, 1, len(user))
+}
