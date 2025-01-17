@@ -28,3 +28,17 @@ func TestCreateManyToMany(t *testing.T) {
 	}).Error
 	assert.Nil(t, err)
 }
+
+func TestPreloadManyToManyProduct(t *testing.T) {
+	var product model.Product
+	err := Db().Preload("LikedByUsers").Take(&product, "id=?", "P001").Error
+	assert.Nil(t, err)
+	assert.Equal(t, 2, len(product.LikedByUsers))
+}
+
+func TestPreloadManyToManyUser(t *testing.T) {
+	var user model.User
+	err := Db().Preload("LikeProducts").Take(&user, "id=?", "21").Error
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(user.LikeProducts))
+}
