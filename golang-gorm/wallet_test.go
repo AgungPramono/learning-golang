@@ -99,3 +99,15 @@ func TestJoinQuery(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 13, len(user))
 }
+
+func TestJoinWithCondition(t *testing.T) {
+	var user []model.User
+	err := Db().Joins("join wallets on wallets.id = users.id where wallets.balance >?", 500000).Find(&user).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 3, len(user))
+
+	user = []model.User{}
+	err = Db().Joins("Wallet").Where("Wallet.balance >?", 500000).Find(&user).Error
+	assert.Nil(t, err)
+	assert.Equal(t, 3, len(user))
+}
