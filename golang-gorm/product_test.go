@@ -1,6 +1,7 @@
 package golang_gorm
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"golang-gorm/model"
 	"gorm.io/gorm"
@@ -112,4 +113,13 @@ func TestAssociationClearAll(t *testing.T) {
 
 	err = Db().Model(&product).Association("LikedByUsers").Clear()
 	assert.Nil(t, err)
+}
+
+// SELECT * FROM `wallets` WHERE `wallets`.`user_id` = '20' AND balance >1000000
+func TestPreloadingWithCondition(t *testing.T) {
+	var user model.User
+	err := Db().Preload("Wallet", "balance >?", 100000).Take(&user, "id=?", "20").Error
+	assert.Nil(t, err)
+
+	fmt.Println(user)
 }
