@@ -1,6 +1,7 @@
 package golang_gorm
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"golang-gorm/model"
 	"gorm.io/gorm/clause"
@@ -67,5 +68,22 @@ func TestSkipAutoCreateUpdateUserWallet(t *testing.T) {
 	}
 
 	err := Db().Omit(clause.Associations).Create(&user).Error
+	assert.Nil(t, err)
+}
+
+// ambil wallet, termasuk user pemilik wallet, sekaligus addressnya
+func TestPreloadingNested(t *testing.T) {
+	var wallet model.Wallet
+	err := Db().Preload("User.Addresses").Take(&wallet, "id=?", "3").Error
+	assert.Nil(t, err)
+
+	fmt.Println(wallet)
+	fmt.Println(wallet.User)
+	fmt.Println(wallet.User.Addresses)
+}
+
+func TestPreloadAll(t *testing.T) {
+	var user model.User
+	err := Db().Preload(clause.Associations).Take(&user, "id=?", "3").Error
 	assert.Nil(t, err)
 }
