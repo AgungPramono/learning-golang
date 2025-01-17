@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang-gorm/model"
 	"gorm.io/gorm/clause"
+	"math"
 	"testing"
 )
 
@@ -110,4 +111,30 @@ func TestJoinWithCondition(t *testing.T) {
 	err = Db().Joins("Wallet").Where("Wallet.balance >?", 500000).Find(&user).Error
 	assert.Nil(t, err)
 	assert.Equal(t, 3, len(user))
+}
+
+func TestAggregation(t *testing.T) {
+	var count int64
+	err := Db().Model(&model.User{}).Joins("Wallet").Where("Wallet.balance>?", 500000).Count(&count).Error
+	assert.Nil(t, err)
+	assert.Equal(t, int64(3), count)
+}
+
+type AggregationResult struct {
+	TotalBalance int64
+	MinBalance   int64
+	MaxBalance   int64
+	AvgBalance   float64
+}
+
+func TestAggregationManual(t *testing.T) {
+	var result AggregationResult
+	err := Db().Model(&model.Wallet{}).Select("sum(balance) as total_balance", "min(balance) as min_balance",
+		"max(balance) as max_balance", "avg(balance) as avg_balance").Take(&result).Error
+	assert.Nil(t, err)
+
+	fmt.Println("total balance:", result.TotalBalance)
+	fmt.Println("total balance:", result.MinBalance)
+	fmt.Println("total balance:", result.MaxBalance)
+	fmt.Println("total balance:", math.Round(result.AvgBalance))
 }
