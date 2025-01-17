@@ -89,6 +89,7 @@ func TestAssociationReplace(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+// hapus semua like user ke produk p001
 func TestAssociationDelete(t *testing.T) {
 	var user model.User
 	err := Db().Take(&user, "id=?", "3").Error
@@ -99,5 +100,16 @@ func TestAssociationDelete(t *testing.T) {
 	assert.Nil(t, err)
 
 	err = Db().Model(&product).Association("LikedByUsers").Delete(&user)
+	assert.Nil(t, err)
+}
+
+// hapus semua like user pada produk P001
+func TestAssociationClearAll(t *testing.T) {
+
+	var product model.Product
+	err := Db().Take(&product, "id=?", "P001").Error
+	assert.Nil(t, err)
+
+	err = Db().Model(&product).Association("LikedByUsers").Clear()
 	assert.Nil(t, err)
 }
